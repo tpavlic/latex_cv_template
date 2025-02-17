@@ -1,5 +1,10 @@
 # latex_cv_template
+
 This repository includes `cv.tex`, which is a simple, customizable LaTeX curriculum-vitae (CV) template that is built on top of the `article` documentclass and leverages standard LaTeX packages to create reusable components for structuring the CV sections. Comments within the template explain how to use and customize it (e.g., how to convert it from a CV tailored for academia to a CV/résumé better suited for industry). Some of that information is also summarized here.
+
+- [Preliminaries](#preliminaries)
+  - [Required LaTeX Packages](#required-latex-packages)
+  - [Building the CV](#building-the-cv)
 
 ## Preliminaries
 
@@ -8,20 +13,21 @@ Before using the template, it is advisable to check if the default version can b
 ### Required LaTeX Packages
 
 This package leverages several standard LaTeX packages that are either typically installed by default in most LaTeX distributions or easy to install from CTAN if not available. Those packages include:
-* `article` documentclass (standard with any LaTeX distribution)
-* `calc`
-* `color` (for colored links; can be removed with minor modifications)
-* `doi` (optional; can be removed with few modifications)
-* `enumitem`
-* `extdash` (optional, but should be removed if not used)
-* `fancyhdr`
-* `fontenc`
-* `geometry`
-* `hyperref` (for PDF bookmarks and links; can be removed with minor modifications)
-* `lastpage` (optiona; can be removed with minor modifications)
-* `times`
-  * an alternative to removal is the `draft` option in `hypersetup`
-* `url` (optional; can be removed with minor modifications)
+
+- `article` documentclass (standard with any LaTeX distribution)
+- `calc`
+- `color` (for colored links; can be removed with minor modifications)
+- `doi` (optional; can be removed with few modifications)
+- `enumitem`
+- `extdash` (optional, but should be removed if not used)
+- `fancyhdr`
+- `fontenc`
+- `geometry`
+- `hyperref` (for PDF bookmarks and links; can be removed with minor modifications)
+- `lastpage` (optiona; can be removed with minor modifications)
+- `times`
+  - an alternative to removal is the `draft` option in `hypersetup`
+- `url` (optional; can be removed with minor modifications)
 
 If images are to be used within the CV, packages like `graphicx` may also need to be loaded.
 
