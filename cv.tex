@@ -1,0 +1,2844 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%% Simple LaTeX CV Template %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% NOTE: If you find that it says                                     %%
+%%                                                                    %%
+%%                           1 of ??                                  %%
+%%                                                                    %%
+%% at the bottom of your first page, this means that the AUX file     %%
+%% was not available when you ran LaTeX on this source. Simply RERUN  %%
+%% LaTeX to get the ``??'' replaced with the number of the last page  %%
+%% of the document. The AUX file will be generated on the first run   %%
+%% of LaTeX and used on the second run to fill in all of the          %%
+%% references.                                                        %%
+%%                                                                    %%
+%% Alternatively, use a build tool like latexmk to automatically      %%
+%% manage the re-running of LaTeX (and auxiliary tools) as many times %%
+%% as is necessary to generate the finalized document.                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%             ALTERATIONS FOR INDUSTRY-STYLE RESUME/CV               %%
+%%                                                                    %%
+%% The layout, font, and section choices below are most consistent    %%
+%% with an curriculum vitae that would be shared in an ACADEMIC       %%
+%% setting, as with graduate students, postdoctoral researchers, or   %%
+%% faculty/researchers seeking employment at institutions of higher   %%
+%% education.                                                         %%
+%%                                                                    %%
+%% For those seeking INDUSTRY work, there are suggestions on how to   %%
+%% adjust this template to better suit that audience. For example,    %%
+%% it is probably best to:                                            %%
+%%                                                                    %%
+%%   * Use the options below for sans-serif fonts (for print/OCR)     %%
+%%   * Disable hyperlinks and bookmarks by using ``draft'' option     %%
+%%     in hypersetup line (for print/OCR compatibility)               %%
+%%   * Consider adding an ``Objective'' section that summarizes goals %%
+%%     - Alternatively, this can be put into a cover letter           %%
+%%   * Consider adding an ``Availability'' section giving possible    %%
+%%     start dates                                                    %%
+%%   * Re-arrange sections so qualifications, security clearances,    %%
+%%     citizenship, education, and PROFESSIONAL EXPERIENCE near the   %%
+%%     TOP before publications (i.e., include publications, but put   %%
+%%     them farther down)                                             %%
+%%   * Try to make the first page of the rendered CV a stand-alone    %%
+%%     snapshot of your background, qualifications, and objectives    %%
+%%                                                                    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Fonts: Don't like 10pt? Try 11pt or 12pt
+\documentclass[10pt]{article}           % Standard article documentclass
+\RequirePackage[T1]{fontenc}            % Improved font encoding in PDF
+
+% Fonts: Use Times New Roman instead of CMR
+% (this will look more palatable to those outside of engineering/math)
+\usepackage{times}
+
+% Fonts [OPTION TO CONSIDER]: No Serifs for Printed/OCR'd Resumes/CV's
+% Historically, fonts with serifs (like Times New Roman) do not scan/OCR
+% well. UNCOMMENT the line below if you want to use fonts without serifs
+% (THIS MAY BE A GOOD IDEA FOR INDUSTRY-FOCUSED RESUMES/CV'S)
+%\renewcommand{\familydefault}{\sfdefault}
+
+% Tools: Helpful package that puts math inside length specifications
+\usepackage{calc}
+
+% Tools: Helps LaTeX auto-hyphenate hyphenated words if you use
+% special hyphens. For example, bio\-/mimicry will properly hyphenate
+% ``mimicry'' if necessary.
+\usepackage[shortcuts]{extdash}
+
+% Layout: Puts the section titles on left side of page
+% (section titles are implemented as margin notes)
+\reversemarginpar
+
+%%%%%%%%%%
+%%%%%%% PAPER SIZE, PAGE NUMBER, AND DOCUMENT LAYOUT NOTES:
+%%%%%%%%%%
+%
+% The next \usepackage line makes room on the left side of the page for
+% section headings. Choose between letter- and A4-sized paper by
+% commenting/uncommenting the blocks below. You can also update the
+% margin widths and section-title widths as appropriate.
+%
+% The includefoot option can be commented OUT to put the PAGE NUMBER
+% *IN* the bottom margin to make the effective text area larger.
+%
+% To remove the ``of LASTPAGE'' next to each page number, see the +LP
+% and -LP notes below in the fancyhdr setup.
+%
+% IF YOU WISH TO REMOVE PAGE NUMBERS, be sure that the includefoot line
+% is uncommented and ALSO uncomment the \pagestyle{empty} a few lines
+% below.
+%
+
+%% Layout: Use these lines for letter-sized paper
+\usepackage[paper=letterpaper,
+            %includefoot, % Uncomment to put page number above margin
+            marginparwidth=1.2in,     % Length of section titles
+            marginparsep=.05in,       % Space between titles and text
+            margin=1in,               % 1 inch margins
+            includemp]{geometry}
+
+%% Layout: Use these lines for A4-sized paper
+%\usepackage[paper=a4paper,
+%            %includefoot, % Uncomment to put page number above margin
+%            marginparwidth=30.5mm,    % Length of section titles
+%            marginparsep=1.5mm,       % Space between titles and text
+%            margin=25mm,              % 25mm margins
+%            includemp]{geometry}
+
+%%%%%%%%%%
+%%%%%%% HEADER AND FOOTER SETUP NOTES:
+%%%%%%%%%%
+%
+% NOTE: comment the +LP lines and uncomment the -LP lines to have page
+%       numbers without the ``of ##'' last page reference)
+%
+% NOTE: uncomment the \pagestyle{empty} line to get rid of all page
+%       numbers (make sure includefoot is commented out above)
+%
+\usepackage{fancyhdr,lastpage}
+\pagestyle{fancy}
+%\pagestyle{empty}      % Uncomment this to get rid of page numbers
+\fancyhf{}\renewcommand{\headrulewidth}{0pt}
+\fancyfootoffset{\marginparsep+\marginparwidth}
+\newlength{\footpageshift}
+\setlength{\footpageshift}
+          {0.5\textwidth+0.5\marginparsep+0.5\marginparwidth-2in}
+
+%%%% PAGE NUMBER LOCATION: TWO OPTIONS (BOTTOM OR TOP-RIGHT)
+%%
+%% OPTION 1: Page number in bottom (center)
+%%
+\lfoot{\hspace{\footpageshift}%
+       \parbox{4in}{\, \hfill %
+                    \arabic{page} of \protect\pageref*{LastPage} % +LP
+%                    \arabic{page}                               % -LP
+                    \hfill \,}}
+%%
+%% OPTION 2: Page number in upper-right corner of page
+%% (replace ``Pavlic'' with your last name, and choose whether to
+%%  include the last page of the document in the header)
+%%
+%\rhead{Pavlic, p.~\arabic{page} of \protect\pageref*{LastPage}}   % +LP
+%\rhead{Pavlic, p.~\arabic{page}}                                  % -LP
+%%%% END PAGE NUMBER LOCATION
+
+%%%% OPTIONAL SPECIAL PAGE-1 HEADER AND FOOTER
+%% (to use a different header/footer on the first page, make sure to
+%%  uncomment the
+%%      \thispagestyle{plain}
+%%  line just after the \begin{document} below)
+\makeatletter
+\let\oldps@plain\ps@plain
+\renewcommand{\ps@plain}{\oldps@plain%
+\renewcommand{\@evenfoot}{\hspace*{-\footpageshift}\hfil %
+    p.~\arabic{page} of \protect\pageref*{LastPage} % +LP
+%    p.~\arabic{page}                               % -LP
+    \hfil}%
+\renewcommand{\@oddfoot}{\@evenfoot}}
+\makeatother
+%%%% END OPTIONAL SPECIAL PAGE-1 HEADER AND FOOTER
+
+
+\lfoot{\hspace{\footpageshift}%
+       \parbox{4in}{\, \hfill %
+                    \arabic{page} of \protect\pageref*{LastPage} % +LP
+%                    \arabic{page}                               % -LP
+                    \hfill \,}}
+
+% Layout: Get rid of indenting throughout entire document
+\setlength{\parindent}{0in}
+
+% Layout: Provides special list environments and macros to create new ones
+\usepackage[shortlabels]{enumitem}
+
+%%%%%%%%%%
+%%%%%%% BIBLIOGRAPHY SECTIONS: bibsection AND bibenum
+%%%%%%%%%%
+%
+% * For lists of references with hanging indents and NO NUMBERS:
+%
+%   \begin{bibsection}
+%       \item ...
+%   \end{bibsection}
+%
+% * For NUMBERED lists of references (with hanging indents):
+%
+%   \begin{bibenum}
+%       \item ...
+%   \end{bibenum}
+%
+%   Note that bibenum numbers continuously throughout. To reset the
+%   counter, use
+%
+%   \restartlist{bibenum}
+%
+%   at the place where you want the numbering to reset.
+
+\makeatletter
+\newlength{\bibhang}
+\setlength{\bibhang}{1em}
+\newlength{\bibsep}
+ {\@listi \global\bibsep\itemsep \global\advance\bibsep by\parsep}
+% bibsection setup (unnumbered bib list)
+\newlist{bibsection}{itemize}{3}
+\setlist[bibsection]{label=,leftmargin=\bibhang,%
+        itemindent=-\bibhang,
+        itemsep=\bibsep,parsep=\z@,partopsep=0pt,
+        topsep=0pt}
+\let\oldendbibsection\endbibsection
+\def\endbibsection{\oldendbibsection\vspace{-.6\baselineskip}}
+% bibenum setup (numbered bib list, with option to reset numbering)
+\newlist{bibenum}{enumerate}{3}
+\setlist[bibenum]{label=[\arabic*],resume,leftmargin={\bibhang+\widthof{[999]}},%
+        itemindent=-\bibhang,
+        itemsep=\bibsep,parsep=\z@,partopsep=0pt,
+        topsep=0pt}
+\let\oldendbibenum\endbibenum
+\def\endbibenum{\oldendbibenum\vspace{-.6\baselineskip}}
+\makeatother
+
+% Accessibility: Enable PDF bookmarks to sections and colored links
+%
+% NOTE: Historically, employers (for industry-focused resumes/CV's)
+%       recommend uncommenting the ``draft'' option below.
+%       Alternatively, you can try using ``black'' instead of
+%       ``darkblue'' for the link colors.
+\usepackage{color,hyperref}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.3}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=darkblue,urlcolor=darkblue,
+            anchorcolor=darkblue,citecolor=darkblue,
+            %linkcolor=black,urlcolor=black,            % For print/OCR
+            %anchorcolor=black,citecolor=black,         % For print/OCR
+            %draft                                      % For print/OCR
+            }
+
+%%%%%%%%%%%%%%%%%%%%%%%% END DOCUMENT SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% HELPER COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% HEADING AT TOP OF CURRICULUM VITAE
+
+% The title (name) with a horizontal rule under it
+% (optional argument typesets an object right-justified across from name
+%  as well)
+%
+% Usage: \makeheading{name}
+%        OR
+%        \makeheading[right_object]{name}
+%
+% Place at top of document. It should be the first thing.
+% If ``right_object'' is provided in the square-braced optional
+% argument, it will be right justified on the same line as ``name'' at
+% the top of the CV. For example:
+%
+%       \makeheading[\emph{Curriculum vitae}]{Your Name}
+%
+% will put an emphasized ``Curriculum vitae'' at the top of the document
+% as a title. Likewise, a picture could be included:
+%
+%   \makeheading[{\includegraphics[height=1.5in]{my_picture}}]{Your Name}
+%
+% the picture will be flush right across from the name. For this example
+% to work, make sure the extra set of curly braces is included. Also
+% make sure that \usepackage{graphicx} is somewhere in the preamble.
+\newcommand{\makeheading}[2][]%
+        {\hspace*{-\marginparsep minus \marginparwidth}%
+         \begin{minipage}[t]{\textwidth+\marginparwidth+\marginparsep}%
+             {\large \bfseries #2 \hfill #1}\\[-0.15\baselineskip]%
+                 \rule{\columnwidth}{1pt}%
+         \end{minipage}}
+
+%%% SECTION HEADINGS
+
+% The section headings. Flush left in small caps down pseudo-margin.
+%
+% Usage: \section{section name}
+\renewcommand{\section}[1]{\pagebreak[3]%
+    \vspace{1.3\baselineskip}%
+    \phantomsection\addcontentsline{toc}{section}{#1}%
+    \noindent\llap{\scshape\smash{\parbox[t]{\marginparwidth}{\hyphenpenalty=10000\raggedright #1}}}%
+    \vspace{-\baselineskip}\par}
+
+%%% LISTS
+
+% This macro alters a list by removing some of the space that follows the list
+% (is used by lists below)
+\newcommand*\fixendlist[1]{%
+    \expandafter\let\csname preFixEndListend#1\expandafter\endcsname\csname end#1\endcsname
+    \expandafter\def\csname end#1\endcsname{\csname preFixEndListend#1\endcsname\vspace{-0.6\baselineskip}}}
+
+% These macros help ensure that items in outer-type lists do not get
+% separated from the next line by a page break
+% (they are used by lists below)
+\let\originalItem\item
+\newcommand*\fixouterlist[1]{%
+    \expandafter\let\csname preFixOuterList#1\expandafter\endcsname\csname #1\endcsname
+    \expandafter\def\csname #1\endcsname{\let\oldItem\item\def\item{\pagebreak[2]\oldItem}\csname preFixOuterList#1\endcsname}
+    \expandafter\let\csname preFixOuterListend#1\expandafter\endcsname\csname end#1\endcsname
+    \expandafter\def\csname end#1\endcsname{\let\item\oldItem\csname preFixOuterListend#1\endcsname}}
+\newcommand*\fixinnerlist[1]{%
+    \expandafter\let\csname preFixInnerList#1\expandafter\endcsname\csname #1\endcsname
+    \expandafter\def\csname #1\endcsname{\let\oldItem\item\let\item\originalItem\csname preFixInnerList#1\endcsname}
+    \expandafter\let\csname preFixInnerListend#1\expandafter\endcsname\csname end#1\endcsname
+    \expandafter\def\csname end#1\endcsname{\csname preFixInnerListend#1\endcsname\let\item\oldItem}}
+
+% An itemize-style list with lots of space between items
+%
+% Usage:
+%   \begin{outerlist}
+%       \item ...    % (or \item[] for no bullet)
+%   \end{outerlist}
+\newlist{outerlist}{itemize}{3}
+    \setlist[outerlist]{label=\enskip\textbullet,leftmargin=*}
+    \fixendlist{outerlist}
+    \fixouterlist{outerlist}
+
+% An environment IDENTICAL to outerlist that has better pre-list spacing
+% when used as the first thing in a \section
+%
+% Usage:
+%   \begin{lonelist}
+%       \item ...    % (or \item[] for no bullet)
+%   \end{lonelist}
+\newlist{lonelist}{itemize}{3}
+    \setlist[lonelist]{label=\enskip\textbullet,leftmargin=*,partopsep=0pt,topsep=0pt}
+    \fixendlist{lonelist}
+    \fixouterlist{lonelist}
+
+% An itemize-style list with little space between items
+%
+% Usage:
+%   \begin{innerlist}
+%       \item ...    % (or \item[] for no bullet)
+%   \end{innerlist}
+\newlist{innerlist}{itemize}{3}
+    \setlist[innerlist]{label=\enskip\textbullet,leftmargin=*,parsep=0pt,itemsep=0pt,topsep=0pt,partopsep=0pt}
+    \fixinnerlist{innerlist}
+
+% An environment IDENTICAL to innerlist that has better pre-list spacing
+% when used as the first thing in a \section
+%
+% Usage:
+%   \begin{loneinnerlist}
+%       \item ...    % (or \item[] for no bullet)
+%   \end{loneinnerlist}
+\newlist{loneinnerlist}{itemize}{3}
+    \setlist[loneinnerlist]{label=\enskip\textbullet,leftmargin=*,parsep=0pt,itemsep=0pt,topsep=0pt,partopsep=0pt}
+    \fixendlist{loneinnerlist}
+    \fixinnerlist{loneinnerlist}
+
+%%% EXTRA SPACE
+
+% To add some paragraph space between lines.
+% This also tells LaTeX to preferably break a page on one of these gaps
+% if there is a needed pagebreak nearby.
+\newcommand{\blankline}{\quad\pagebreak[3]}
+\newcommand{\halfblankline}{\quad\vspace{-0.5\baselineskip}\pagebreak[3]}
+
+%%% FORMATTING MACROS
+
+% Provides a linked \doi{#1} that links doi:#1 to http://dx.doi.org/#1
+\usepackage{doi}
+% To change the text before the DOI, adjust this command
+%\renewcommand\doitext{doi:}
+
+% Provides a linked \url{#1} that doesn't require escape characters
+\usepackage{url}
+
+% You can adjust the style \url{} uses here:
+% (options are: same, rm, sf, tt; defaults to tt)
+\urlstyle{same}
+
+% For \email{ADDRESS}, links ADDRESS to the url mailto:ADDRESS
+% (uncomment to typeset the e\-/mail address in typewriter font;
+%  otherwise, will be typeset in the \urlstyle above)
+%\DeclareUrlCommand\emaillink{\urlstyle{tt}}
+\providecommand*\emaillink[1]{\nolinkurl{#1}}
+\providecommand*\email[1]{\href{mailto:#1}{\emaillink{#1}}}
+
+%%% CUSTOMIZATION FOR YOUR SPECIFIC NEEDS
+
+% Macros for saving keystrokes and reducing errors due to typos
+\providecommand\BibTeX{{B\kern-.05em{\sc i\kern-.025em b}\kern-.08em \TeX}}
+\providecommand\Matlab{\textsc{Matlab}}
+
+% Custom hyphenation rules for words that LaTeX has trouble with
+\hyphenation{bio-mim-ic-ry bio-in-spi-ra-tion re-us-a-ble pro-vid-er Media-Wiki}
+
+%%%%%%%%%%%%%%%%%%%%%%%% END HELPER COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%% BEGIN CV DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%\thispagestyle{plain}  % Uncomment to disable fancy header for page 1
+
+% See \makeheading options above for instructions on how to include
+% ``Curriculum vitae'' or even a photo set on the right side of the page
+% across from this heading
+\makeheading{Dr.~Theodore~(Ted) P.~Pavlic}
+
+%% ** NOTE: SECTIONS BELOW TAILORED FOR AN ACADEMIC CURRICULUM VITAE **
+%%
+%% FOR INDUSTRY-TAILORED SECTIONS, CONSIDER STARTING WITH:
+%%
+%% * Contact Information
+%% * Objective (can also put in cover letter)
+%% * Qualifications and Interests
+%% * Availability (possible start dates)
+%% * Security Clearance and/or Citizenship (e.g., for classified work)
+%% * Education
+%% * *** Professional Experience (BEFORE publications) ***
+%% * Publications, Presentations, Talks, etc. (DE-EMPHASIZED!)
+%%   - These are placed lower on an industry-focused CV
+%% * (etc.)
+%%
+%% Also, attempt to make the first page of the rendered PDF a
+%% stand-alone quick reference of your background.
+%%
+%% ********************************************************************
+
+\section{Contact Information}
+
+% NOTE: Mind where the & separators and \\ breaks are in the following
+%       table. Table is one row made up of three parboxes. The left
+%       parbox has address info, the middle parbox has a vertical bar,
+%       and the right parbox has phone and electronic contact
+%       information.
+%
+% MACROS: \rcollength is the width of the right column of the table
+%             (adjust it to your liking; default is 1.85in).
+%         \spacewidth is width of area between left and right boxes.
+%
+\newlength{\rcollength}\setlength{\rcollength}{1.85in}%
+\newlength{\spacewidth}\setlength{\spacewidth}{20pt}
+%
+\begin{tabular}[t]{@{}p{\textwidth-\rcollength-\spacewidth}@{}p{\spacewidth}@{}p{\rcollength}}%
+
+% Address box
+\parbox{\textwidth-\rcollength-\spacewidth}{%
+%Assistant Professor\\
+\href{http://www.asu.edu/}{Arizona State University}\\
+\href{http://cidse.engineering.asu.edu/}{School of Computing and Augmented Intelligence}\\
+PO Box 878809, Room 553\\
+Tempe, AZ  85287-8809  USA}
+
+&
+% Uncomment to add a vertical bar in middle of contact information
+%{\vrule width 0.5pt}
+\parbox[m][5\baselineskip]{\spacewidth}{} &
+
+% Non-snail-mail contact information
+\parbox{\rcollength}{%
+\textit{Work:} +1-480-965-2899 \\
+\textit{Fax:} +1-480-965-2751 \\
+\textit{E-mail:} \email{tpavlic@asu.edu}\\
+\textit{WWW:} \href{http://www.tedpavlic.com/}{www.tedpavlic.com}}
+
+\end{tabular}
+
+%%
+%% In modern CV's, it seems like ``Objective'' is frowned upon. Instead,
+%% incorporate it into a well-constructed cover letter. The ``More
+%% information'' can go at the end of the CV, but it should not distract
+%% from the section giving references available to contact.
+%%
+%
+% \section{Objective}
+%
+% Placement in an academic position (i.e., faculty, postdoctoral, or
+% research scientist) that allows for advanced research in distributed
+% complex adaptive systems (i.e., modeling, analysis, design, and
+% verification) with a particular focus on the control of engineered
+% agents (e.g., for communications, control, software, electronics, and
+% sustainability) and the analysis of biological phenomena (e.g.,
+% self-organization, ecological rationality)
+% \begin{innerlist}
+% \item More information and auxiliary documents can be found at\\\url{http://www.tedpavlic.com/facjobsearch/}
+% \end{innerlist}
+
+% For industry-focused CV, ``Qualifications and Interests'' instead
+\section{Research Interests}
+
+\textbf{Complex adaptive systems in control systems engineering and
+behavioral science:} distributed algorithms, computational agent-based
+modeling, hybrid dynamic systems, decentralized decision making,
+emergence and self organization, amorphous computing, autonomous
+systems, control, communications, verification, cooperation,
+optimization, game theory, resource allocation, parallel computation,
+robotics, energy systems, sustainability in the built environment,
+behavioral ecology, engineering education, bio-mimicry and
+bio-inspiration
+
+%% These sections may be more valuable on industry-focused CV
+
+%\section{Availability}
+%
+%\begin{loneinnerlist}
+%    \item Start time is negotiable; may be possible to start immediately
+%    \item Geographic location is flexible, but there is preference
+%        for Tempe, AZ
+%\end{loneinnerlist}
+%
+%\section{Security Clearance}
+%
+%Department of Defense Top Secret SCI with polygraph (expired: 2002)
+%
+%% \section{Citizenship}
+%%
+%% USA
+
+%% For industry-focused CV, consider putting ``Education'' and
+%% ``Professional Experience'' sections here (BEFORE publications)
+
+\section{Current Academic Appointments}
+
+\textbf{Assistant Professor},
+            \href{http://www.asu.edu/}{Arizona State University}
+            \hfill {August 2015 to present}
+\begin{innerlist}
+
+    \item[] \href{http://cidse.engineering.asu.edu/}{School of
+        Computing and Augmented Intelligence}~(50\%)
+    \item[] \href{http://sustainability.asu.edu/}{School of
+        Sustainability}~(25\%)
+    \item[] \href{http://sustainability.asu.edu/}{School of Complex
+        Adaptive Systems}~(25\%)
+    \begin{innerlist}
+        \item Affiliations:
+            \begin{innerlist}
+                \item \href{http://sols.asu.edu}{School of Life Sciences} (Adjunct Professor)
+                \item \href{http://biomimicry.asu.edu/}{The Biomimicry Center} (Associate Director of Research)
+                \item \href{https://complexity.asu.edu/asu-sfi-center-biosocial-complex-systems}{ASU--Santa Fe Institute Center for Biosocial Complex Systems} (ASU--SFI Fellow)
+                \item \href{http://barretthonors.asu.edu/}{Barrett, the Honors College} (Honors Faculty)
+                \item \href{http://beyond.asu.edu/}{BEYOND Center for Fundamental Concepts in Science}
+                \item \href{http://csdc.asu.edu/}{Center for Social Dynamics and Complexity}
+                \item \href{http://sustainability.asu.edu/biodiversityoutcomes/}{Center for Biodiversity Outcomes}
+                \item \href{http://globalsecurity.asu.edu/}{Global Security Initiative}
+                \item \href{https://biodesign.asu.edu/biocomputing-security-and-society}{Center for Biocomputation, Security, and Society}
+            \end{innerlist}
+    \end{innerlist}
+
+\end{innerlist}
+
+\halfblankline
+
+\textbf{External Faculty},
+        \href{http://humancomputation.org/}{Human Computation Institute}
+        \hfill {June 2015 to present}
+
+\section{Previous Academic Appointments}
+
+\textbf{Associate Research Scientist},
+            \href{http://www.asu.edu/}{Arizona State University}
+            \hfill {August 2014 to July 2015}
+\begin{innerlist}
+
+    \item[] \href{http://sols.asu.edu/}{School of Life Sciences}
+    \begin{innerlist}
+        \item Affiliations:
+            \begin{innerlist}
+                \item \href{http://cidse.engineering.asu.edu/}{School of Computing, Informatics, and Decision Systems Engineering}
+                \item \href{http://beyond.asu.edu/}{BEYOND Center for Fundamental Concepts in Science}
+                \item \href{http://csdc.asu.edu/}{Center for Social Dynamics and Complexity}
+            \end{innerlist}
+        \item Laboratories:
+            \begin{innerlist}
+                \item \href{http://www.public.asu.edu/~spratt1}{Stephen C.~Pratt's Collective Behavior Laboratory}
+                \item \href{http://faculty.engineering.asu.edu/acs/}{Autonomous Collective Systems Laboratory} (PI: Spring Berman)
+                \item \href{http://emergence.asu.edu/}{Emergence@ASU} (PI: Paul C. W. Davies, co-PI: Sara I. Walker)
+            \end{innerlist}
+    \end{innerlist}
+
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Postdoctoral Scholar},
+            \href{http://www.asu.edu/}{Arizona State University}
+            \hfill {July 2012 to August 2014}
+\begin{innerlist}
+
+    \item[] \href{http://sols.asu.edu/}{School of Life Sciences}
+    \begin{innerlist}
+        \item Supervisor: \href{http://www.public.asu.edu/~spratt1}{Professor Stephen C.~Pratt}
+        \item Decentralized decision making and behavioral bio-mimicry
+            of social insects
+    \end{innerlist}
+
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Postdoctoral Researcher},
+            \href{http://www.osu.edu/}{The Ohio State University}
+            \hfill {September 2010 to June 2012}
+\begin{innerlist}
+
+    \item[] \href{http://www.cse.ohio-state.edu/}{Department of Computer Science and Engineering}
+    \begin{innerlist}
+        \item \href{http://www.nfs.gov/}{NSF} ECCS-\href{http://www.nsf.gov/awardsearch/showAward?AWD_ID=0931669}{0931669}:
+                ``Autonomous Driving in Mixed-Traffic Urban Environments''
+        \begin{innerlist}
+            \item[$-$] Supervisor (co-PI):
+                \href{http://www.cse.ohio-state.edu/~paolo/}%
+                     {Professor Paolo A.~G.~Sivilotti}
+            \item[$-$] PI:
+                \href{http://www.ece.ohio-state.edu/~umit/}%
+                     {Professor \"{U}mit \"{O}zg\"{u}ner}
+        \end{innerlist}
+    \end{innerlist}
+
+\end{innerlist}
+
+\section{Education}
+
+\href{http://www.osu.edu/}{\textbf{The Ohio State University}},
+Columbus, OH
+\begin{outerlist}
+
+\item[] Ph.D.,
+        \href{http://www.ece.osu.edu/}
+             {Electrical and Computer Engineering},
+             August 2010
+        \begin{innerlist}
+        \item Thesis Topic: \emph{Design and Analysis of Optimal
+            Task-Processing Agents}
+        %\item Thesis Proposal: \emph{Cooperative Task Processing}
+        \item Candidacy: \emph{Research
+            Problems in Distributed Control for Energy Systems}
+        \item Adviser:
+              \href{http://www.ece.osu.edu/~passino/}
+                   {Professor Kevin M.~Passino}
+        \item Area of Study: Control Engineering
+        \end{innerlist}
+
+\item[] M.S.,
+        \href{http://www.ece.osu.edu/}
+             {Electrical and Computer Engineering}, August 2007
+        \begin{innerlist}
+        \item Thesis Topic: \emph{Optimal Foraging Theory Revisited}
+        \item Adviser:
+              \href{http://www.ece.osu.edu/~passino/}
+                   {Professor Kevin M.~Passino}
+        \item Area of Study: Control Engineering
+        \end{innerlist}
+
+\item[] B.S.,
+        \href{http://www.ece.osu.edu/}
+             {Electrical and Computer Engineering}, June 2004
+        \begin{innerlist}
+        \item \emph{Magna cum Laude}, With Honors in Engineering
+        \item Electrical specialization (emphasis on electromagnetics and digital computers)
+        \item Minor in \href{http://www.cse.ohio-state.edu/}
+                            {Computer and Information Systems}
+              (programming and algorithms)
+        \end{innerlist}
+
+\end{outerlist}
+
+% \section{Submitted Journal Publications}
+%
+% % Add a little space to nudge next ``Ref'd Journal Publications'' marginpar
+% % down to make room for tall ``Submitted Journal Publications''
+% % marginpar. If there are enough submitted journal publications, this
+% % space will not be needed (and should be removed).
+% \vspace{0.1in}
+
+\section{Refereed Journal Publications}
+
+\begin{bibenum}
+    \item Caetano-Anoll{\'{e}}s, K., B.~Ewers, S.~Iyer, J.R.~Lucas,
+        T.P.~Pavlic, A.P.~Seale, and Y.~Zeng.
+        A minimal framework for describing living systems: a
+        multi-dimensional view of life across scales.
+        \emph{Journal of Integrative and Comparative Biology}. 2021.
+        Accepted.
+
+    \item Pavlic, T.P., J.~Hanson, G.~Valentini, S.I.~Walker, and
+        S.C.~Pratt.
+        Quorum sensing without deliberation: Biological inspiration for externalizing computation to physical spaces in
+        multi-robot systems.
+        \emph{Swarm Intelligence}, 15:171--203. 2021.
+        \doi{10.1007/s11721-021-00196-4}
+
+    \item Baudier, K., and T.P.~Pavlic.
+        Incidental interactions among Neotropical army-ant colonies are
+        met with self-organized walls of ants~(Hymenoptera: Formicidae).
+        \emph{Myrmecological News}, 30:251--258. 2020.
+        \doi{10.25849/myrmecol.news_030:251}
+
+    \item Wheatley, R., T.P.~Pavlic, O.~Levy, and R.S.~Wilson.
+        Habitat features and performance interact to determine the
+        outcomes of terrestrial predator--prey pursuits.
+        \emph{Journal of Animal Ecology}, 89(12):2951--2971. 2020.
+        \doi{10.1111/1365-2656.13353}
+
+    \item Valentini, G., N.~Mizumoto, S.C.~Pratt, T.P.~Pavlic, S.I.~Walker.
+        Revealing the structure of information flows discriminates
+        similar animal social behaviors.
+        \emph{eLife}, 9:e55395. 2020.
+        \doi{10.7554/eLife.55395}
+
+    \item Valentini, G., N.~Masuda, Z.~Shaffer, J.R.~Hanson, T.~Sasaki,
+        S.I.~Walker, T.P.~Pavlic, and S.C.~Pratt.
+        Division of labour promotes the spread of information in colony
+        emigrations by the ant \emph{Temnothorax rugatulus}.
+        \emph{Proceedings of the Royal Society B: Biological Sciences},
+        287:20192950.
+        \doi{10.1098/rspb.2019.2950}
+
+    \item Baudier, K., M.M.~Bennett, M.M.~Ostwald, S.~Hart, T.P.~Pavlic,
+        and J.H.~Fewell. Age-based changes in kairomone response mediate
+        task partitioning in stingless bee soldiers (\emph{Tetragonisca
+        angustula}). \emph{Behavioral Ecology}, 74(10):1--9. 2020.
+        \doi{10.1007/s00265-020-02902-4}
+
+    \item Wilson, R.S., T.P.~Pavlic, R.~Wheatley, A.C.~Niehaus, and
+        O.~Levy. Modeling escape success in terrestrial predator--prey
+        interactions.
+        \emph{Integrative \& Comparative Biology}, 60(2):497--508. 2020.
+        \doi{10.1093/icb/icaa070}
+
+    \item Baudier, K., M.M.~Ostwald, C.~Grueter, F.~Segers, D.~Roubik,
+        T.P.~Pavlic, S.C.~Pratt, and J.H.~Fewell. Changing of the guard:
+        flexible specialization and age polyethism in nest defense of
+        the stingless bee \emph{Tetragonisca angustula}.
+        \emph{Behavioral Ecology}, 30(4):1041--1049. 2020.
+        \doi{10.1093/beheco/arz047}
+
+    \item Burchill, A., and T.P.~Pavlic. Dude, Where's my Mark? Creating
+        Robust Animal Identification Schemes Informed by Communication
+        Theory. \emph{Animal Behaviour}, 154:203--208. 2019.
+        \doi{10.1016/j.anbehav.2019.05.013}
+
+    \item Hunter, A., M.J.~Angilletta Jr., T.P.~Pavlic, G.~Lichtwark,
+        and R.S.~Wilson. Modeling the two-dimensional accuracy of soccer
+        kicks. \emph{Journal of Biomechanics}, 72:159--166, April~27,
+        2018. \doi{10.1016/j.jbiomech.2018.03.003}
+
+    \item Pavlic, T.P., S.~Wilson, G.P.~Kumar, and S.~Berman. Control of
+        stochastic boundary coverage by multi-robot systems.
+        \emph{Journal of Dynamic Systems, Measurement, and Control
+        [Special Issue on Stochastic Models, Control and Algorithms
+        in Robotics]}, 137(3):034504, March~1, 2015.
+        \doi{10.1115/1.4028353}
+
+    \item Wilson, S., T.P.~Pavlic, G.P.~Kumar, A.~Buffin, S.~Pratt, and
+        S.~Berman. Design of ant-inspired stochastic control policies
+        for collective transport by robotic swarms. \emph{Swarm
+        Intelligence}, 8(4):303--327, December 2014.
+        \doi{10.1007/s11721-014-0100-8}
+
+    \item Pavlic, T.P., and K.M.~Passino. Distributed and Cooperative
+        Task Processing: Cournot Oligopolies on a Graph.
+        \emph{IEEE Transactions on Cybernetics}, 44(6):774--784, June~2014.
+        \doi{10.1109/TCYB.2013.2271776}
+
+    \item Pavlic, T.P., and K.M.~Passino. Generalizing foraging theory
+        for analysis and design. \emph{The International Journal of
+        Robotics Research [Special Issue on Stochasticity in Robotics
+        and Bio-Systems Part 1]}, 30(5):505--523, 2011.
+        \doi{10.1177/0278364910396551}
+
+    \item Pavlic, T.P., and K.M.~Passino. The sunk-cost effect as an
+        optimal rate-maximizing behavior. \emph{Acta Biotheoretica},
+        59(1):53--66, 2011.
+        \doi{10.1007/s10441-010-9107-8}
+
+    \item Pavlic, T.P., and K.M.~Passino. When rate maximization is
+        impulsive. \emph{Behavioral Ecology and Sociobiology},
+        64(8):1255--1265, August 2010.
+        \doi{10.1007/s00265-010-0940-1}
+
+    \item Pavlic, T.P., and K.M.~Passino. Foraging theory for autonomous
+        vehicle speed choice. \emph{Engineering Applications of
+        Artificial Intelligence}, 22(3):482--489, April 2009.\\
+        \doi{10.1016/j.engappai.2008.10.017}
+\end{bibenum}
+
+% Add a little space to nudge next ``Conference Publications'' marginpar
+% down to make room for tall ``Submitted Conference Publications''
+% marginpar. If there are enough submitted journal publications, this
+% space will not be needed (and should be removed).
+\vspace{0.1in}
+
+\section{Refereed Conference Publications}
+
+\begin{bibenum}
+    \item Baudier, K., and T.P.~Pavlic.
+        Multi-Level Instrumentation of Bivouac Thermoregulation: Current
+        Methods and Future Directions.
+        In: \emph{Proceedings of the 4th International Symposium on
+            Swarm Behavior and Bio-Inspired Robotics~(SWARM-2021)},
+            June~1--4, 2021. Kyoto, Japan.
+
+    \item Choi, T., B.~Pyenson, J.~Liebig, and T.P.~Pavlic.
+        Beyond Tracking: Using Deep Learning to Discover Novel
+        Interactions in Biological Swarms.
+        In: \emph{Proceedings of the 4th International Symposium on
+            Swarm Behavior and Bio-Inspired Robotics~(SWARM-2021)},
+            June~1--4, 2021. Kyoto, Japan. Best paper award.
+
+    \item Choi, T., B.~Pyenson, J.~Liebig, and T.P.~Pavlic.
+        Identification of Abnormal States in Videos of Ants Undergoing
+        Social Phase Change.
+        In: \emph{Proceedings of the AAAI Conference on Artificial
+            Intelligence~(AAAI~2021)}, 35(17):15286--15292,
+            February~4--6, 2021. Virtual conference.
+
+    \item Choi, T., and T.P.~Pavlic.
+        Automatic Discovery of Motion Patterns that Improve Learning
+        Rate in Communication-Limited Multi-Robot Systems.
+        In: \emph{Proceedings of the 2020 IEEE Conference on Multisensor
+        Fusion and Integration for Intelligent Systems~(MFI 2020)},
+        September~14--16, 2020. Karlsruhe, Germany.
+        \doi{10.1109/MFI49285.2020.9235218}
+
+    \item Kang, S., T.~Choi, and T.P.~Pavlic.
+        How far should I watch? Quantifying the effect of various
+        observational capabilities on long-range situational awareness
+        in multi-robot teams.
+        In: \emph{Proceedings of the 2020 IEEE International Conference
+        on Autonomic Computing and Self-Organizing Systems
+        (ACSOS~2020)}, August~17--21, 2020. Washington, DC, USA.
+        \doi{10.1109/ACSOS49614.2020.00036}
+
+    \item Choi, T., S.~Kang, and T.P.~Pavlic.
+        Learning local behavioral sequences to better infer non-local
+        properties in real multi-robot systems.
+        In: \emph{Proceedings of the 2020 IEEE International Conference
+        on Robotics and Automation~(ICRA 2020)}, May~31~-- August~31,
+        2020. Paris, France.
+        \doi{10.1109/ICRA40945.2020.9196728}
+
+    \item Bowers, K.P., L.G. Strickland, G. Cooke, C. Pippin, and T.P.
+        Pavlic. Trust-based Information Propagation on Multi-robot Teams
+        in Noisy Low-communication Environments. In: \emph{Proceedings of the
+        14th International Symposium on Distributed Autonomous Robotic
+        Systems~(DARS 2018)}, October 15--17, 2018. Boulder, CO, USA.
+        \doi{10.1007/978-3-030-05816-6_17}
+
+    \item Strickland, L.G., K. Baudier, K.P. Bowers, T.P. Pavlic, and C.
+        Pippin. Bio-Inspired Role Allocation of Heterogeneous Teams in a
+        Site Defense Task. In: \emph{Proceedings of the 14th
+            International Symposium on Distributed Autonomous Robotic
+        Systems~(DARS 2018)}, October 15--17, 2018. Boulder, CO, USA.
+        \doi{10.1007/978-3-030-05816-6_10}
+
+    \item Valentini, G., D.G.~Moore, J.R.~Hanson, T.P.~Pavlic,
+        S.C.~Pratt, and S.I. Walker. Transfer of Information in
+        Collective Decisions by Artificial Agents. In: \emph{Proceedings
+        of the 2018 Conference on Artificial Life~(ALIFE 2018)}, July
+        23--27, 2018. Tokyo, Japan.
+        \doi{10.1162/isal_a_00117}
+
+    \item Choi, T., T.P.~Pavlic, and A.~Richa. Automated
+        Synthesis of Scalable Algorithms for Inferring Non-Local
+        Properties to Assist in Multi-Robot Teaming. In:
+        \emph{Proceedings of the 2017 IEEE International Conference on
+        Automation Science and Engineering~(CASE 2017)},
+        August 20--23, 2017. %\\
+        \doi{10.1109/COASE.2017.8256320}
+
+    \item Tuncali, C.E., S.~Yaghoubi, T.P.~Pavlic, and G.~Fainekos.
+        Functional Gradient Descent Optimization for Automatic Test Case
+        Generation for Vehicle Controllers. In:
+        \emph{Proceedings of the 2017 IEEE International Conference on
+        Automation Science and Engineering~(CASE 2017)},
+        August 20--23, 2017. %\\
+        \doi{10.1109/COASE.2017.8256245}
+
+    \item Tuncali, C.E., T.P.~Pavlic, and G.~Fainekos. Utilizing
+        S-TaLiRo as an Automatic Test Generation Framework for
+        Autonomous Vehicles. In: \emph{Proceedings of the 19th
+        International Conference on Intelligent Transportation
+        Systems (ITSC 2016)}, November 1--4, 2016.\\
+        \doi{10.1109/ITSC.2016.7795751}
+
+    \item Campbell, J., C.E.~Tuncali, P.~Liu, T.P.~Pavlic, U.~Ozguner,
+        and G.~Fainekos. Modeling concurrency and reconfiguration in
+        vehicular systems: A $\pi$-calculus approach. In:
+        \emph{Proceedings of the 2016 IEEE International Conference on
+        Automation Science and Engineering (CASE 2016)}, August 21--24,
+        2016.\\
+        \doi{10.1109/COASE.2016.7743450}
+
+    \item Pavlic, T.P., A.~Adams, P.C.W.~Davies, and S.I.~Walker.
+        Self-referencing cellular automata: A model of the evolution of
+        information control in biological systems.
+        In: \emph{Proceedings of the 14th International Conference on
+        the Synthesis and Simulation of Living Systems~(ALIFE~14)},
+        July 30~-- August 2, 2014.\\
+        \doi{10.7551/978-0-262-32621-6-ch083}
+
+    \item Pavlic, T.P.. Using Physical Stigmergy in Decentralized
+        Optimization Under Multiple Non-separable Constraints: Formal
+        Methods and an Intelligent Lighting Example. In:
+        \emph{Proceedings of the 2014 Workshop on Nature Inspired
+        Distributed Computing~(NIDISC~2014)}, pp.~402--411, May 19, 2014.
+        \doi{10.1109/IPDPSW.2014.52}
+
+    \item Pavlic, T.P., S.~Wilson, G.P.~Kumar, and S.~Berman.
+        An enzyme-inspired approach to stochastic allocation of robotic
+        swarms around boundaries. In: \emph{Proceedings of the 16th
+        International Symposium on Robotics Research~(ISRR~2013)},
+        pp.~631--647, December 16--19, 2013.
+        \doi{10.1007/978-3-319-28872-7_36}
+
+    \item Kumar, G.P., A.~Buffin, T.P.~Pavlic, S.C.~Pratt, and
+        S.M.~Berman. A Stochastic Hybrid System Model of Collective
+        Transport in the Desert Ant \emph{Aphaenogaster cockerelli}. In:
+        \emph{Proceedings of the 16th International Conference on Hybrid
+        Systems: Communication and Control (HSCC~2013)}, pp.~119--124,
+        April 8--11, 2013. \doi{10.1145/2461328.2461349}
+
+    \item Pavlic, T.P., and K.M.~Passino. Cooperative task-processing
+        networks.\linebreak[4] In:~\emph{Proceedings of the Second
+        International Workshop on Networks of Cooperating
+        Objects (CONET~2011)}, April 11, 2011.
+
+    \item Freuler, R.J., M.J.~Hoffmann, T.P.~Pavlic, J.M.~Beams,
+        J.P.~Radigan, P.K.~Dutta, J.T.~Demel, and E.D.~Justen.
+        Experiences with a Comprehensive Freshman Hands-On Course~--
+        Designing, Building, and Testing Small Autonomous Robots. In:
+        \emph{Proceedings of the 2003 American Society for Engineering
+        Education Annual Conference \& Exposition}, 2003.
+
+\end{bibenum}
+
+\section{Patents}
+
+\begin{bibenum}
+    \item Tuncali, C.E., T.P.~Pavlic, and G.~Fainekos.
+        Model predictive adaptive cruise control for reducing rear-end
+        collision risk with follower vehicles.
+        US Patent 10766489B2, 2020.
+\end{bibenum}
+
+\section{Conference Talks}
+%
+\emph{Talks associated with conference publications listed above are not
+included here.}
+
+\halfblankline
+
+\begin{bibenum}
+    \item Lynch, C., I.~Bespalova, T.P.~Pavlic and J.H.~Fewell.
+        How to Effectively Sample to Estimate Distributions of
+        Behavioral States and Transitions in Social Insects.
+        In: \emph{4th International Symposium on
+        Swarm Behavior and Bio-Inspired Robotics~(SWARM-2021)},
+        June~1--4, 2021. Kyoto, Japan.
+
+    \item Navas~Zuloaga, M.G., K.M.~Baudier, T.P.~Pavlic, J.H.~Fewell,
+        N.~Ben-Asher, and Y.~Kang. A mathematical model of flexible
+        collective defense: crisis response in stingless bees. In:
+        \emph{International Symposium on Biomatheamtics \& Ecology
+        Education \& Research~(BEER 2020)}, November 13--15, 2020.
+        Illinois State University.
+
+    \item Burchill, A.T., K.S.~O’Meara, T.P.~Pavlic, S.C.~Pratt,
+        and C.R.~Reid. “Cooperatively transporting massive prey up
+        vertical surfaces in the weaver ant Oecophylla smaragdina.”
+        Entomology 2019, November 17--20, St. Louis, MO.
+
+    \item Baudier, K.M., M.M.~Bennett, J.H.~Fewell, T.P.~Pavlic. Neural
+        and physiological underpinnings of defense specialization in
+        soldiers of the stingless bee \emph{Tetragonisca angustula}.
+        Entomology 2019, November 17--20, St. Louis, MO.
+
+    \item Valentini, G., N.~Mizumoto, T.P.~Pavlic, S.C.~Pratt, and
+        S.I.~Walker. Complex Communication: Receiver-Sourced Signals
+        that Regulate Information Flow During Social Recruitment.
+        Behaviour 2019, July 23--27, 2019, Chicago, IL.
+
+    \item X.~Guo, M.~Lin, L.~Saldyt, T.P.~Pavlic, Y.~Kang, J.H.~Fewell. A
+        study of alarm propagation in ants with machine learning and
+        network building. Behaviour 2019, July 23--27, 2019, Chicago,
+        IL.
+
+    \item Burchill, A.T., C. Reid, K. O’Meara, T.P. Pavlic, S. Pratt.
+        Collective transport up vertical surfaces in the weaver ant
+        \emph{Oecophylla smaragdina.} Behaviour 2019, July 23--27, 2019,
+        Chicago, IL.
+
+    \item Baudier, K., M.~Bennett, J.H.~Fewell, S.C.~Pratt, T.P.~Pavlic.
+        Ageing modulates defensive tasks performed by soldiers of the
+        stingless bee \emph{Tetragonisca angustula}. Behaviour 2019, July
+        23--27, 2019, Chicago, IL.
+
+    \item Pavlic, T.P., J.R.~Hanson, G.~Valentini, S.I.~Walker, and
+        S.C.~Pratt. Cognition in physical spaces: A quorum-sensing
+        mechanism for ants without sequential sampling. Behaviour 2019,
+        July 23--27, 2019, Chicago, IL.
+
+    \item Pavlic, T.P. Distributed Non-linear Optimization under
+        Non-separable Constraints: A Low-communication Approach with a
+        Power Systems Example. In: \emph{2018 INFORMS Annual Meeting},
+        November 4--7, 2018. Phoenix, AZ, USA.
+
+    \item Xin Su, and T.P. Pavlic. Improving Exploration in
+        Population-based Metaheuristics using Fading Consensus:
+        Application to PSO. In: \emph{2018 INFORMS Annual Meeting},
+        November 4--7, 2018. Phoenix, AZ, USA.
+
+    \item Pavlic, T.P. Intake Targets or Rate Maximization? A Foraging
+        Currency that Aligns OFT and the GF. In: International Society
+        for Behavioral Ecology 2018 Conference~(ISBE 2018), August
+        11--16, 2018. Minneapolis.
+
+    \item Valentini, G., S.~Zhou, J.R.~Hanson, T.P.~Pavlic, S.C.~Pratt,
+        and S.I.~Walker. Information transfer during tandem-running
+        behavior of the ant \emph{Temnothorax rugatulus}: Time scales of
+        leadership? In: International Union for the Study of Social
+        Insects 2018 Meeting~(IUSSI 2018), August 5--10, 2018.
+        Guaruj{\'{a}}, Brazil.
+
+    \item Baudier, K.M., J.~Fewell, T.P.~Pavlic, and S.C.~Pratt.
+        Changing of the Guard: Task dynamics of stingless bee nest
+        defense in cleptoparasitic environments. In: International Union
+        for the Study of Social Insects 2018 Meeting~(IUSSI 2018),
+        August 5--10, 2018. Guaruj{\'{a}}, Brazil.
+
+    \item Pavlic, T.P., J.R.~Hanson, G.~Valentini, S.I.~Walker, and
+        S.C.~Pratt. Quorum sensing without counting, a discounting
+        approach, or: Nobody goes there anymore, it’s too crowded. In:
+        \emph{6th Workshop on Biological Distributed
+        Algorithms~(BDA~2018)}, July 23, 2018. London, UK.
+
+    \item Burchill, A., T.P.~Pavlic, and S.C.~Pratt. Macronutrient
+        regulation and foraging strategies in the Neotropical ant
+        \emph{Ectatomma ruidum}. In: \emph{2017 Annual Meeting of the
+        Entomological Society of America}, November 5--8, 2017. Denver,
+        CO, USA.
+
+    \item Xin Su, and T.P.~Pavlic. Characterization and Prediction of
+        Hyper-jump Diffusion in Consensus Dynamics on Networks. In:
+        \emph{2017 INFORMS Annual Meeting}, October 22--25, 2017.
+        Houston, TX, USA.
+
+    \item Wheatley, R., O.~Levy, T.P.~Pavlic, and R.S.~Wilson. What
+        factors determine predation success? Considering speed, agility,
+        and strategy for predators and prey. In: \emph{2017
+        Annual Meeting of the Society for Integrative and Comparative
+        Biology}, January 4--8, 2017. New Orleans, LA, USA.
+
+    \item Wheatley, R., O.~Levy, T.P.~Pavlic, and R.S.~Wilson.
+        Predicting predator evasion success based on speed, agility, and
+        escape path. In: \emph{2016 Ecological Society of Australia},
+        November 28~-- December 2, 2016. Fremantle, Australia.
+
+    \item Pavlic, T.P.. From social insects to smart, flexible, adaptive
+        teams of robots: The biomechanics of group decision-making. In:
+        \emph{2016 XXV International Congress of Entomology}, September
+        25--30, 2016. Orlando, FL, USA.
+
+    \item Pavlic, T.P., and S.C.~Pratt. Testing Unified Foraging
+        Theories with Social Insects: Integrating Macronutrient
+        Regulation with More Traditional Costs and Benefits. In:
+        \emph{2015 Conference on Complex Systems}, September 28 –
+        October 2, 2015. Tempe, AZ, USA.
+
+    \item Pavlic, T.P., and S.C.~Pratt.
+        Numerical Methods within the Ant Colony: The Illuminating Case
+        of Multi-Objective Macronutrient Regulation in Eusocial Insects.
+        In: \emph{2nd Workshop on Biological Distributed
+        Algorithms~(BDA~2014)}, Austin, TX, October 11--12, 2014.
+
+    \item Pavlic, T.P., and S.C.~Pratt. Understanding foraging patterns
+        that achieve colony-level macronutrient regulation. In:
+        \emph{2014 International Union for the Study of Social Insects
+        International Congress~(IUSSI~2014)}, Queensland, Australia,
+        July 13--18, 2014.
+
+    \item Pavlic, T.P.
+        Kinetic modeling of social insect behavior and beyond: Lessons
+        from stochastic robotics. In: \emph{2013 International Symposium
+        on Biomathematics and Ecology Education and
+        Research~(BEER~2013)}, Arlington, VA, October 11--13, 2013.
+
+    \item Pavlic, T.P., and S.C.~Pratt.
+        Sequential\-/sampling models of quorum sensing in house-hunting
+        \emph{Temnothorax} ants. In: \emph{50th Annual Conference of the
+        Animal Behavior Society}, July~28--August~1, 2013.
+
+    \item Pavlic, T.P. Speed\--accuracy tradeoffs in \emph{Temnothorax
+        rugatulus} ants: Sequential\-/sampling models of quorum
+        detection while house hunting. In: \emph{2013 Society for
+        Mathematical Biology Annual Meeting and Conference~(SMB~2013)},
+        June 10--13, 2013.
+
+    \item Pavlic, T.P., and S.C.~Pratt. Sequential\-/sampling models of
+        quorum detection in house-hunting ants. In: \emph{2012 North
+        American Section Meeting of the International Union for the
+        Study of Social Insects~(IUSSI-NAS~2012)}, October 5--7, 2012.
+
+\end{bibenum}
+
+\section{Conference Posters}
+
+\begin{bibenum}
+    \item Xin Su, and T.P. Pavlic. Dynamical Characterizations of
+        Complex Behavior in Consensus Networks with Stochastic Link
+        Failures. In: Proceedings of the 2017 SIAM Conference on
+        Dynamical Systems, May 21--25, 2017. Snowbird, UT, USA. Poster
+        abstract.
+
+    \item Burchill, A.T., T.P. Pavlic, and S.C. Pratt. Consistent
+        self-organized foraging allocations in the
+        macronutrient-regulating carpenter ant, Camponotus fragilis. In:
+        \emph{2016 XXV International Congress of
+        Entomology}, September 25--30, 2016. Orlando, FL, USA. Poster
+        abstract. \doi{10.1603/ICE.2016.114782}
+
+    \item Pavlic, T.P. Physical Stigmergy for Decentralized Constrained
+        Optimization: An Intelligent Lighting Example. In:
+        \emph{Proceedings of the 4th International Conference on
+        Cyber-Physical Systems~(ICCPS~2013)}, April 8--11, 2013.
+        Poster abstract.
+
+    \item Pavlic, T.P., S.~P.~Peddi, P.A.G.~Sivilotti, and B.W.~Weide.
+        Getting Out of the Way~-- Safety Verification without
+        Compromise. In: \emph{Proceedings of the 2012 IEEE/ACM Third
+        International Conference on Cyber-Physical
+        Systems~(ICCPS~2012)}, April 17--19, 2012. Poster abstract.
+
+    \item Pavlic, T.P., P.A.G.~Sivilotti, A.D.~Weide, and B.W.~Weide.
+        Verification of Smooth and Close Collision-Free Cruise Control.
+        In: \emph{Proceedings of the 2011 Symposium on Control and
+        Modeling Cyber-Physical Systems}, October 20--21, 2011. Poster
+        abstract.
+
+    \item {\"{O}}zg{\"{u}}ner, {\"{U}}., A.~Krishnamurthy,
+        F.~{\"{O}}zg{\"{u}}ner, K.~Redmill, P.~Sivilotti, B.~Weide,
+        and T.~Pavlic.
+        CPS: Autonomous driving in urban environments.
+        In: \emph{Proceedings of the 2011 NSF CPS PI Meeting},
+        August 1--2, 2011. Poster abstract.
+
+    \item Pavlic, T.P., and K.M.~Passino. Cooperative task
+        processing. In: \emph{Proceedings of the ICAM 2009 Symposium:
+        Emergence in Physical, Biological, and Social Systems IV},
+        November 13, 2009. Poster abstract.
+
+\end{bibenum}
+
+\section{Invited Talks}
+
+\begin{bibenum}
+    \item Pavlic, T.P. Technically a Model: Animal Behavior in
+        Engineering Design. In: \emph{58th Annual Conference of the
+        Animal Behavior Society (ABS 2021)}, 2021. Virtual conference.
+        Past-President Symposium speaker.
+
+    \item Caetano-Anoll{\'{e}}s, K., B.~Ewers, S.~Iyer, J.R.~Lucas
+        (presenter), T.P.~Pavlic, A.P.~Seale, and Y.~Zeng. A minimal
+        framework for describing living systems: a multi-dimensional
+        view of life across scales. In: \emph{58th Annual Conference of
+        the Animal Behavior Society (ABS 2021)}, 2021. Virtual
+        conference.
+
+    \item Pavlic, T.P. Viewing the socio-technological dimensions of
+        vehicle autonomy through the lens of ecology and organismal and
+        integrative biology. In: \emph{IPAM Workshop IV: Social Dynamics
+        Beyond Vehicle Autonomy}, November 30~-- December 4, 2020. UCLA.
+
+    \item Pavlic, T.P. Thinking about Randomness for Thinking. In:
+        Google/O'Reilly Science Foo Camp (SciFoo 2020), October 23--25,
+        2020.
+
+    \item Pavlic, T.P. Cognition in Tiny, Random Spaces: What You Get
+        for Free When There is No Free Energy. In: Soft Condensed Matter
+        \& Physics of Living Systems Seminar, March 10, 2020. Georgia
+        Institute of Technology.
+
+    \item Pavlic., T.P. Enclosed Autonomy: Opportunities and Challenges for
+        Intelligent Systems in Closed Worlds. In: Life and Systems in Closed
+        Worlds workshop, December 11--13, 2019, Oracle, AZ.
+
+    \item Pavlic, T.P. Beyond Gilding Refined Gold: Does Biological
+        Computation Compute?. In: Coffee@Beyond monthly seminar, January
+        28, 2019, Tempe, AZ.
+
+    \item Pavlic, T.P. Model Systems for Studying Information Spread.
+        In: 2018 DARPA SocialSim PI Meeting and Challenge Event.
+        December 11--13, 2018, Arlington, MA.
+
+    \item Pavlic, T.P. Thinking Outside the 'Bot: What Ecology,
+        Physiology, and Conservation Biology can Offer to Engineering
+        Design. In: \emph{The Ohio State University, Department of
+        Electrical \& Computer Engineering Seminar}, September 13, 2018.
+
+    \item Pavlic, T.P. Thinking Outside the 'Bot: What Ecology,
+        Physiology, and Conservation Biology can Offer to Engineering
+        Design. In: \emph{Georgia Institute of Technology Decision and
+        Control Laboratory Seminar}, July 19, 2017.
+
+    \item Pavlic, T.P. Living laboratories and natural histories for
+        distributed computing. In: \emph{Moving and Computing 2017: 7th
+        Research Meeting and School on Distributed Computing by
+        Mobile Robots}, June 5--9, 2017.
+
+    \item Pavlic, T.P. Be Undisciplined. Lose Your Innocence. Get to
+        Work. In: \emph{TEDxASU 2017: Innovators}, March 23, 2017.
+
+    \item Pavlic, T.P. Free-loading isn’t free: The lack of
+        control of cheating in ants, bees, wasps, and collaborative
+        robots. In: 2017 ASU Cooperation and Conflict Symposium,
+        February 16, 2017. Tempe, AZ, USA.
+
+    \item Pavlic, T.P. Algorithmic foundations of biological matter:
+        faster, cheaper, and more out of control. In: \emph{Algorithmic
+        Foundations of Programmable Matter (Dagstuhl Seminar 16271)},
+        July 3--8, 2016.
+
+    \item Pavlic, T.P. Kinetic modeling of collective behavior: When a
+        good match goes bad. In: \emph{KI-Net Workshop on Collective
+        Dynamics and Model Verification: Connecting Kinetic Modeling to
+        Data}, April 17--19, 2015.
+
+    \item Pavlic, T.P.
+        The hidden demographics of distributed information processing:
+        The role of intermediates in a social-insect colony. In:
+        \emph{Social Insects as Models for Biological Complexity:
+        Lessons Learned and Challenges on the Horizon}, symposium of the
+        2014 Annual Meeting of the Entomological Society of
+        America~(Entomology 2014). November 16--19, 2014.
+
+    \item Pavlic, T.P. Understanding foraging patterns that achieve
+        colony-level macronutrient regulation. In: \emph{ASU--UW\"{u}
+        International Symposium and Workshop on Frontiers in Insect
+        Behavior, Social Organization, and Evolution}, May 23--30, 2014.
+
+    \item Pavlic, T.P. Take Home Messages: Evolution of Distributed
+        Computational Networks. In: \emph{BEYOND Center Physics of
+        Living Matter Workshop: Information, Complexity, and Life},
+        February 24--25, 2013.
+
+    \item Pavlic, T.P. Biomathematics at ``The New American
+        University.'' In: ``Biomathematics Courses and Programs'' expert
+        panel at 2013 International Symposium on Biomathematics and
+        Ecology Education and Research~(BEER~2013),
+        October 11--13, 2013.
+
+    \item Pavlic, T.P. The Economic Framework: Constrained Optimization
+        and Colony Collapse Disorder. In: \emph{Perspectives for
+        Mathematical and Biological Interdisciplinary Research on
+        Honeybees and Pollination}, June 14, 2013.
+
+    \item Pavlic, T.P. Stochastic Robotics: Complexity,
+        Compositionality, and Scalability. In: \emph{KI-Net Workshop on
+        Kinetic Theory for the Emergence of Complex Behavior in Social
+        and Economic Systems}, February 22--24, 2013.
+
+\end{bibenum}
+
+\section{Book Chapters}
+
+\begin{bibenum}
+    \item Pavlic, T.P.
+        Social Models from Non-Human Systems.
+        In: P.~Davis, J.~Pfautz, and Angela O'Mahony~(Eds),
+        \emph{Social-Behavioral Modeling for Complex Systems},
+        ch.~11, pp.~231--261, 2019.
+        \doi{10.1002/9781119485001.ch11}
+
+    \item Weinstein, S., and T.P.~Pavlic.
+        Noise and function. In: S.I.~Walker, P.C.W.~Davies, and
+        G.F.R.~Ellis~(Eds), \emph{From Matter to Life: Information and
+        Causality}, ch.~9, pp.~126--143, 2017.
+        \doi{10.1017/9781316584200.009}
+
+    \item Pavlic, T.P., and S.C.~Pratt.
+        Superorganismic Behavior via Human Computation. In:
+        P.~Michelucci~(Ed.), \emph{Handbook of Human Computation}, ch.
+        74, pp. 911--960. 2013.
+        \doi{10.1007/978-1-4614-8806-4_74}
+\end{bibenum}
+
+\section{Other Publications}
+
+\begin{bibenum}
+    \item Pavlic, T.P., P.A.G.~Sivilotti, A.D.~Weide, and B.W.~Weide.
+        Comments on `Adaptive Cruise Control: Hybrid, Distributed, and
+        Now Formally Verified'. Tech.~report OSU-CISRC-7/11-TR22, The Ohio State
+        University, 2011.
+
+    \item Pavlic, T.P., and K.M.~Passino. Cooperative Task-processing
+        Networks: Parallel Computation of Non-trivial Volunteering
+        Equilibria. Tech.~report OSU-CISRC-3/11-TR05, The Ohio State
+        University, 2011.
+
+    \item Pavlic, T.P. \emph{Design and Analysis of Optimal
+        Task-Processing Agents}. PhD thesis, The Ohio State University,
+        Columbus, OH, 2010.
+
+    \item Pavlic, T.P. \emph{Optimal Foraging Theory Revisited}.
+        Master's thesis, The Ohio State University, Columbus, OH, 2007.
+\end{bibenum}
+
+%\section{Books in Preparation}
+%
+%\begin{bibenum}
+%    \item Pavlic, T.P., B.W.~Andrews, K.M.~Passino, and T.A.~Waite.
+%        \emph{Foraging Theory for Engineering}. In preparation.
+%\end{bibenum}
+
+%\section{Papers in Preparation}
+%
+%\begin{bibenum}
+%    \item Valentini, G., N.~Mizumoto, T.P.~Pavlic, S.C.~Pratt, and
+%        S.I.~Walker. Control of information flow with acknowledgment
+%        tokens in a non-human organism.
+%
+%    \item Xiaohui Guo, M.R.~Lin, L.P.~Saldyt, T.P.~Pavlic, Y.~Kang,
+%        J.H.~Fewell. Adaptive alarm signal propagation by ant colonies:
+%        using a machine learning approach to track individual and colony
+%        response.
+%
+%    \item Pavlic, T.P., and S.C. Pratt. The Economic Framework: Using
+%        constrained optimization to unify the ideal free distribution,
+%        the marginal value theorem, and the geometric framework of
+%        nutrition.
+%
+%    \item Pavlic, T.P. Risk-sensitive foraging and the Sharpe ratio.
+%\end{bibenum}
+
+\section{Grants}
+\restartlist{bibenum}
+
+%\textbf{Awaiting Decision}
+%
+%\begin{bibenum}
+%    \item Senior staff, ``A new multi-objective optimization framework
+%        for investigating mechanisms of social resource allocation'',
+%        NIH, NIGMS, 2015. Revision in progress.
+%
+%\end{bibenum}
+%
+%\blankline
+
+\textbf{Awarded}
+
+\begin{bibenum}
+    \item Co-Principal Investigator, ``Center of Excellence for Accelerating
+        Operational Efficiency (CAOE) - Year 4'', DHS, \$3,715,000, July~1,
+        2020 to June~30, 2021.
+
+    \item Co-Principal Investigator, ``Center of Excellence for Accelerating
+        Operational Efficiency (CAOE) - Year 3'', DHS, \$4,171,000, July~1,
+        2019 to June~30, 2020.
+
+    \item Co-Principal Investigator, ``Energy-efficient Neuromorphic
+        Computing in Light of the Structural and Functional Evolution of
+        Multi-scale Insect Brains'', DARPA DSO, \$1,000,000, April~3,
+        2019 to October~2, 2020.
+
+    \item Co-Principal Investigator, ``Autonomous System Control via
+        Social Insect Models, Phase II'', DARPA I2O, \$550,000, August~18,
+        2019 to August~17, 2020.
+
+    \item Co-Principal Investigator, ``Autonomous System Control via
+        Social Insect Models'', DARPA I2O, \$990,792, May~17, 2018 to
+        August~17, 2019.
+
+    \item Co-Principal Investigator, ``Biomimicry for Sensory
+        Communication'', Google, \$288,367, December~1, 2017 to July
+        31,~2018.
+
+    \item Co-Principal Investigator, ``CRISP: Type 2/Collaborative
+        Research: Design and Control of Coordinated Green and Gray Water
+        Infrastructure to Improve Resiliency in Chemical and
+        Agricultural Sectors'', NSF SES-1735579, \$1,874,988,
+        September~1, 2017 to August~31, 2021.
+
+    \item Co-Principal Investigator, ``A Methodology for Modeling Swarm
+        Behavioral Dynamics from Local Observations'', DARPA I2O,
+        \$175,000, June 1,~2017 to May~31, 2018.
+
+    \item Co-Principal Investigator, ``BioSwarm: Bio-Inspired
+        Swarming'', DARPA I2O, \$193,079, December 1,~2016 to
+        February 28,~2018.
+
+    \item Co-Principal Investigator, ``Emergent Computation in
+        Collective Decision Making by the Crevice-Dwelling Rock Ant
+        \emph{Temnothorax rugatulus}'', NSF PHY-1505048, \$595,006, May
+        1,~2016 to April 30,~2019.
+
+    \item Senior staff,
+        ``CPS:Synergy: Collaborative Research: Collaborative Vehicular
+        Systems'', NSF ECCS-1446730, \$914,802, January 1,~2015 to
+        December 31,~2017.
+
+    \item Senior staff,
+        ``Autonomous Driving in Mixed\-/Traffic Urban Environments'',
+        NSF,\linebreak[4]
+        \href{http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0931669}{ECCS-0931669},
+        \$1,499,833, September 1,~2009 to August 31,~2012.
+
+\end{bibenum}
+
+%\blankline
+%
+%\textbf{Not Awarded}
+%
+%\begin{bibenum}
+%
+%    \item Senior staff, ``Informational architecture of collective
+%        decision making by \emph{Temnothorax} ants'', NSF, POLS, 2013.
+%        Not awarded.
+%
+%    \item Senior staff,
+%        ``Biological stoichiometry of horizontal gene transfer and the
+%        social dynamics of microbial communities'', Army Research
+%        Office, 2013. Not awarded.
+%
+%    \item Senior staff,
+%        ``Biologically-inspired strategies for collective transport and
+%        construction by multi-robot systems'', NSF, RI, 2013. Not
+%        awarded.
+%
+%    \item Co\-/PI,
+%        ``An Ant Model System for the Study of Nutrient Balance in
+%        Social\-/Insect Pollinators'', USDA,
+%        NIFA\-/AFRI Foundational proposal, 2013. Not awarded.
+%
+%    \item Senior staff,
+%        ``Cooperative LED Arrays for Preference\-/Adaptive Lighting in
+%        Smart Buildings'',
+%        NSF,
+%        EFRI\-/SEED preliminary proposal, 2009. Not awarded.
+%
+%\end{bibenum}
+
+%\section{Academic Service}
+%
+%\textbf{Arizona State University, Tempe, AZ}
+%\begin{lonelist}
+%
+%    \item College of Liberal Arts and Sciences Research Operations Committee,
+%        \emph{Center for Social Dynamics and Complexity Representative},
+%        2016--present.
+%
+%    \item Biosocial Complexity Initiative Directorate,
+%        \emph{Liaison for Cross-University Activities},
+%        2016--present.
+%
+%    \item Engineering Management Undergraduate Program Committee,
+%        \emph{Member},
+%        2015--present.
+%
+%    \item The Biomimicry Center,
+%        \emph{Associate Director of Research},
+%        2015--present.
+%
+%    \item Committee for the Development of Biomimicry and
+%        Bio\-/inspired Research and Education Initiatives at ASU,
+%        \emph{Chairman}.
+%        2013.
+%
+%    \item Interdisciplinary Complexity Science Student Organization,
+%        \emph{Founding faculty co\-/adviser}.
+%        2013.
+%
+%\end{lonelist}
+
+\section{Advising and Mentoring}
+
+\textbf{Postdoctoral Scholars}
+
+\begin{outerlist}
+
+    \item \textbf{Dr.~Kaitlin Baudier}, 2017--2020\\
+        Co-advised by: Stephen C.~Pratt and Jennifer H.~Fewell
+
+    \item \textbf{Dr.~Gabrielle Valentini}, 2016--2020\\
+        Co-advised by: Stephen C.~Pratt and Sara Imari Walker
+
+\end{outerlist}
+
+\blankline
+
+\textbf{Graduate Students}
+
+\begin{outerlist}
+%    \item \textbf{Brian Vincent}, PhD Student, Computer Science, 2017--\\
+%        Co-advised by: Huan Liu
+
+    \item \textbf{Jinyung Hong}, PhD Student, Computer Science
+        Engineering, 2019--
+
+    \item \textbf{Colin Lynch}, PhD Student, Animal Behavior, 2019--\\
+        Co-advised by: Jennifer H.~Fewell
+
+%    \item \textbf{Himanshu Aggarwal}, PhD Student, Industrial
+%        Engineering, 2018--
+
+    \item \textbf{Xin Su}, PhD Student, Industrial Engineering, 2015--
+
+    \item \textbf{Andrew Burchill}, PhD Student, Animal Behavior, 2015--\\
+        Co-advised by: Stephen C. Pratt
+
+    \item \textbf{Taeyeong Choi}, PhD Student, Computer Science Engineering, 2016--2020 (graduated, PhD)
+
+    \item \textbf{Sehyeok Kang}, MS Student, Computer Engineering, 2019--2020 (graduated, MS)
+
+    \item \textbf{Christian Seto}, MS Student, Industrial Engineering, 2017--2018 (graduated, MS)
+\end{outerlist}
+
+\blankline
+
+\textbf{Undergraduate Honors Theses}
+
+\begin{outerlist}
+    \item \textbf{Liliaokeawawa Cothren}, 2020--2021, Applied Mathematics, honors thesis (director)\\
+        Thesis topic: Mathematical investigation of the adaptive value of marginal-value heuristic in a model forager
+
+    \item \textbf{Samantha Castro}, 2019--2020, Biological Sciences, honors thesis (director)\\
+        Thesis topic: The Individual Contribution to Cooperative Transport in the ant \emph{Novomessor albisetosus}
+
+    \item \textbf{Danielle Adams}, 2018--2019, Industrial Engineering, honors thesis (director)\\
+        Thesis topic: Simulation optimization of industrial foundry
+
+    \item \textbf{Jeanbat Busisi}, 2018--2019, Industrial Engineering, honors thesis (director)\\
+        Thesis topic: A study of delay and long waiting time of healthcare service delivery in public healthcare systems
+
+    \item \textbf{Robert Chandler}, 2018, Computer Science, honors thesis (second reader)
+        Thesis director: Michael Clough\\
+        Thesis topic: Developing an Educational Manufacturing Simulation
+
+    \item \textbf{Andrea Spence}, 2017--2018, Industrial Engineering, honors thesis (second reader)\\
+        Thesis director: Daniel McCarville\\
+        Thesis topic: Optimized Line Calling Strategies in Ultimate Frisbee
+
+    \item \textbf{Erin Glavin}, 2017--2018, Industrial Engineering, honors thesis (director)\\
+        Thesis topic: A strategy for improved traffic flow
+
+    \item \textbf{Mikaela Hall}, 2016--2017, Industrial Engineering, honors thesis (director)\\
+        Thesis topic: The effect of workplace culture on productivity
+
+    \item \textbf{Garrett Burnett}, 2015--2016, Arts, Media, and Engineering, honors thesis (second reader)\\
+        Thesis director: Garth Paine\\
+        Thesis topic: SoundSwarm: An interactive exploration of
+        3-dimensional and behavioral modeled sound
+
+    \item \textbf{Grant Doering}, 2015--2016, Aerospace Engineering, honors thesis (second reader)\\
+        Thesis director: Stephen C.~Pratt.\\
+        Thesis topic: Reunification dynamics and consensus decisions in \emph{Temonthorax rugatulus}
+
+    \item \textbf{Christal Johnson}, 2012, Biology, honors thesis (second reader)\\
+        Thesis director: Stephen C.~Pratt.\\
+        Thesis topic: Modeling and analysis of quorum detection during
+        emigration behavior in \emph{Temnothorax rugatulus} ants
+
+\end{outerlist}
+
+\blankline
+
+\textbf{Undergraduate Research}
+
+\begin{outerlist}
+
+%    \item \textbf{Alyssa Adams}\\
+%        Graduate student in Physics, Arizona State University.
+%        Modeling and analysis of top\-/down causation in
+%        self\-/referencing cellular\-/automata models of the origins of
+%        life.
+%        Primary adviser: Sara I.~Walker.
+%        2013--2014.
+
+    \item \textbf{Samantha Castro}\\
+        Undergraduate student in Biology, Arizona State University.
+        Laboratory support of research on collective transport in
+        \emph{Novomessor cockerelli} ants.
+        2018--2021
+
+    \item \textbf{Ricardo Weir}\\
+        Undergraduate student in Computer Science Engineering, Arizona State University.
+        Application of computer vision tools to automated tracking of
+        ants.
+        2017--2018
+
+    \item \textbf{Hana Putnam} and \textbf{Alex Nachman}\\
+        Undergraduate students in Biology, Arizona State University.
+        Laboratory support of research on decentralized nutrient
+        regulation in \emph{Temnothorax rugatulus} ants.
+        Primary adviser: Stephen C.~Pratt.
+        2013.
+
+    \item \textbf{Taylor Vance} and \textbf{P.~Logan Rogers}
+        and \textbf{Betsy Siegworth}\\
+        Undergraduate students in Biology, Arizona State University.
+        Laboratory support of research on quorum detection by encounter
+        rate in \emph{Temnothorax rugatulus} ants.
+        Primary adviser: Stephen C.~Pratt.
+        2013.
+
+%    \item \textbf{Sean T.~Wilson}\\
+%        Graduate student in Mechanical Engineering, Arizona State University.
+%        Dynamical modeling and analysis of the collective carrying
+%        behaviors of \emph{Aphaenogaster cockerelli} ants.
+%        Primary adviser: Spring Berman.
+%        2012--2013.
+
+%    \item \textbf{Ganesh P.~Kumar}\\
+%        Graduate student in Computer Science, Arizona State University.
+%        Bio\-/mimetic design of collective carrying algorithms for
+%        robotics, inspired by the ant \emph{Aphaenogaster cockerelli}.
+%        Primary adviser: Spring Berman.
+%        2012--2013.
+
+
+%    \item \textbf{Cory Henderson}, \textbf{James O'Donnell},
+%        \textbf{Ian Neack}, and \textbf{Patrick Whewell}\\
+%        Undergraduate students in Electrical and Computer Engineering,
+%        The Ohio State University.
+%        Group design project on retrofittable
+%        vehicle\-/to\-/vehicle communications system for
+%        adaptive\-/cruise\-/control in mixed\-/traffic environments.
+%        Primary adviser: Keith Redmill.
+%        2012.
+
+%    \item \textbf{Manas Agrawal}
+%        Graduate student in Computer Science and Engineering,
+%        The Ohio State University.
+%        Software verification and model checking applied to railroad
+%        safety problems.
+%        Primary adviser: Bruce W.~Weide.
+%        2012.
+%
+%    \item \textbf{Sai Prathyusha Peddi}
+%        Graduate student in Computer Science and Engineering,
+%        The Ohio State University.
+%        Software verification applied to adaptive cruise
+%        control and instrumented intersection signal timing.
+%        Primary adviser: Bruce W.~Weide.
+%        2011--2012.
+%
+%    \item \textbf{Jaeyong Park}.
+%        Graduate student in Electrical and Computer Engineering,
+%        The Ohio State University.
+%        Provably correct on\-/line control synthesis for
+%        autonomous vehicles with hybrid dynamics.
+%        Primary adviser: \"{U}mit \"{O}zg\"{u}ner.
+%        2011--2012.
+
+\end{outerlist}
+
+\section{Teaching Experience}
+
+\href{http://www.asu.edu/}{\textbf{Arizona State University}},
+Tempe, AZ
+\begin{outerlist}
+
+\item[] \textit{Instructor} \hfill \textbf{Fall 2015 to present}
+    \begin{innerlist}
+        \item SOS 212 (Systems, Dynamics, and Sustainability)
+        \item SOS 325 (Economics of Sustainability)
+        \item IEE 475 (Simulating Stochastic Systems)
+        \item SOS 591 (Selected Topics in Ecological Modeling)
+        \item ANB 602/IEE 598
+            (Optimal Foraging Theory: From Biology to Engineering Design)
+        \item ANB 602
+            (Noise and Function: Random Algorithms in Animal Behavior)
+        \item IEE/CSE 598
+            (Bio-Inspired AI and Optimization)
+    \end{innerlist}
+
+\item[] \textit{Guest Lecturer} \hfill \textbf{April 2015}
+    \begin{innerlist}
+        \item ASM~394: Great Adaptations: Origins of Complexity in Nature
+        \begin{innerlist}
+            \item Undergraduate course in the science and mathematics of anthropology
+            \item Main instructor: Joan B.~Silk
+            \item Lecture: ``Connecting Evolutionary Adaptation and the Engineering Design Process''
+        \end{innerlist}
+    \end{innerlist}
+
+\item[] \textit{Guest Lecturer} \hfill \textbf{October 2013}
+    \begin{innerlist}
+        \item ANB~601: Research Strategies in Animal Behavior
+        \begin{innerlist}
+            \item Graduate-level course in animal behavior
+            \item Main instructor: Ronald L.~Rutowski
+            \item Lecture: ``Mathematical, Computational, and Experimental Modeling: Granularity and Parsimony''
+        \end{innerlist}
+    \end{innerlist}
+
+\end{outerlist}
+
+\halfblankline
+
+\href{http://www.osu.edu/}{\textbf{The Ohio State University}},
+Columbus, OH
+\begin{outerlist}
+
+\item[] \textit{Instructor}%
+    \hfill \textbf{March~2012 to August~2012}
+    \begin{innerlist}
+        \item Instructor for ECE~683: Undergraduate Design Project
+            %
+            \begin{innerlist}
+                \item Students designed retrofitable vehicle\-/to\-/vehicle
+                    communications system to aid in the development of
+                    verifiably safe adaptive cruise control.
+                \item Design project folded into larger research project
+                    on autonomous vehicles in mixed\-/traffic urban
+                    environments.
+            \end{innerlist}
+    \end{innerlist}
+
+\item[] \textit{Teaching Assistant}%
+    \hfill \textbf{September 2007 to August 2009}\\
+    (sample graded material and student evaluations available upon
+    request)
+    \begin{innerlist}
+        \item Instructor for ECE~327: Electronic Devices and Circuits Laboratory I
+        \begin{innerlist}
+            \item Autumn~2007, Winter~(2) and Spring~2008~(2),
+                Winter~(2) and Summer~2009
+
+            % \item Sample student evaluations available upon request.
+
+            \item Responsible for 1-hour lecture and supervision of
+                3-hour laboratory. Students design and implement
+                infrared modem and 8-ohm speaker driver.
+
+            \item Authored hundreds of pages of course material
+                archived at\\
+                \url{http://www.tedpavlic.com/teaching/osu/ece327}.
+        \end{innerlist}
+
+        \halfblankline
+
+        \item Grader for ECE~481 Ethics in Electrical and Computer Engineering
+        \begin{innerlist}
+            \item Autumn~2007 and Autumn~2008
+        \end{innerlist}
+
+        \halfblankline
+
+        \item Instructor for ECE~209: Circuits and Electronics
+            Laboratory
+        \begin{innerlist}
+            \item Autumn~2008
+
+            % \item Sample student evaluations available upon request.
+
+            \item Responsible for lecture and supervision of basic
+                electronics laboratory.
+
+            \item Authored material at
+                \url{http://www.tedpavlic.com/teaching/osu/ece209}.
+        \end{innerlist}
+
+        \halfblankline
+
+        \item Instructor for ECE~557: Control, Signals, and Systems
+            Laboratory
+        \begin{innerlist}
+            \item Summer~2008~(2~sections) and Summer~2009
+
+            % \item Sample student evaluations available upon request.
+
+            \item Responsible for lecture and supervision of laboratory.
+                Students used
+                \href{http://www.mathworks.com/products/simulink/}{Simulink}
+                and \href{http://www.dspaceinc.com/}{dSPACE} RTI1104
+                units for linear system control design.
+
+            \item Authored material at
+                \url{http://www.tedpavlic.com/teaching/osu/ece557}.
+        \end{innerlist}
+
+        \halfblankline
+
+        \item Lab Instructor for ECE~758: Control Systems Implementation
+            Laboratory
+        \begin{innerlist}
+            \item Spring~2009~(2~sections)
+
+            % \item Sample student evaluations available upon request
+
+            \item Responsible for lecture and supervision of laboratory.
+                Graduate and senior undergraduate students used
+                \href{http://www.mathworks.com/products/simulink/}{Simulink},
+                with \href{http://www.dspaceinc.com/}{dSPACE} RTI1104
+                units for analysis of and advanced control implementation
+                for linear and non\-/linear systems.
+
+            \item Authored material at
+                \url{http://www.tedpavlic.com/teaching/osu/ece758}.
+        \end{innerlist}
+    \end{innerlist}
+
+\item[] \href{http://www.nsfgk12.org/}
+        {\emph{National Science Foundation GK\-/12 Graduate Fellow}}
+        \hfill \textbf{September 2006 to October 2007}
+\begin{innerlist}
+    \item[] Developed, implemented, and evaluated daily inquiry\-/based
+        fourth\-/grade science lessons for a local inner\-/city public
+        school class.
+\end{innerlist}
+
+\item[] \textit{Instructor}%
+        \hfill \textbf{March 2002 to June 2004}
+\begin{innerlist}
+\item Member of \href{http://feh.eng.ohio-state.edu/}
+                     {Fundamentals of Engineering for Honors}
+      instructional team.
+\item Special graduate teaching appointment as undergraduate.
+\item Lectured weekly engineering laboratory for ENG~H191,
+        H192, and~H193.
+\item Trained in\-/class undergraduate teaching assistants in laboratory
+        procedure.
+\item Graded weekly lab reports and provided laboratory exams.
+\end{innerlist}
+
+\item[] \textit{Teaching Assistant}%
+        \hfill \textbf{September 2000 to March 2002}
+\begin{innerlist}
+\item Assisted \href{http://feh.eng.ohio-state.edu/}
+                    {Fundamentals of Engineering for Honors}
+      instructional team.
+\item Provided support to first\-/year engineering students (ENG~H191,
+      H192, and H193).
+\item Graded daily assignments on programming and drafting.
+\item Developed on\-/line journal system for Physics Education Research
+      Group~(PERG).
+\end{innerlist}
+
+\item[] \textit{Undergraduate Researcher}%
+        \hfill \textbf{September 2000 to March 2002}
+\begin{innerlist}
+\item Participated in the
+        \href{http://www.cse.ohio-state.edu/europa/}{Europa
+        Undergraduate Research Forum}, a part of the
+        \href{http://www.cse.ohio-state.edu/rsrg/}{Reusable Software
+        Research Group}.
+\item Studied component\-/based software engineering undergraduate
+        pedagogy.
+\item Researched changes to RESOLVE/C++ implementation for ANSI
+        compliance.
+\end{innerlist}
+
+\item[] \textit{Grader}%
+        \hfill \textbf{September 2001 to December 2001}
+\begin{innerlist}
+\item Graded daily electromagnetics assignments (ECE~311).
+\end{innerlist}
+\end{outerlist}
+
+\section{Professional Service}
+
+\textbf{Committee Service}
+\begin{innerlist}
+    \item Officer, IEEE Special Technical Community for Human Computation
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Referee Service}
+\begin{innerlist}
+    \item \emph{IEEE Conference on Decision and Control~(CDC)}
+    \item \emph{International Journal of Control}
+    \item \emph{ASME Journal of Dynamic Systems, Measurement, and Control}
+    \item \emph{IEEE International Conference on Robotics and Automation~(ICRA)}
+    \item \emph{IEEE Robotics and Automation~-- Letters}
+    \item \emph{IEEE/RSJ International Conference on Intelligent Robots and Systems~(IROS 2021)}
+    \item \emph{IEEE Transactions on Signal Processing}
+    \item \emph{IEEE Transactions on Control Systems Technology}
+    \item \emph{IEEE Transactions on Cybernetics}
+    \item \emph{IEEE Transactions on Intelligent Transportation Systems}
+    \item \emph{The International Journal of Robotics Research}
+    \item \emph{Engineering Applications of Artificial Intelligence}
+    \item \emph{Journal of Simulation}
+    \item \emph{Winter Simulation Conference~(WSC)}
+    \item \emph{International Conference on Autonomous Agents and Multiagent Systems~(AAMAS)}
+    \item \emph{International Journal of Nonlinear Sciences and Numerical Simulation}
+    \item \emph{IEEE Symposium on Artificial Life}
+    \item \emph{Bioinspiration \& Biomimetics}
+    \item \emph{Swarm and Evolutionary Computation}
+    \item \emph{Journal of the Royal Society Interface}
+    \item \emph{Scientific Reports}
+    \item \emph{American Naturalist}
+    \item \emph{Biology Letters}
+    \item \emph{Behavioral Ecology}
+    \item \emph{Behavioral Ecology and Sociobiology}
+    \item \emph{Animal Behaviour}
+    \item \emph{Ecology and Evolution}
+    \item \emph{Ecological Research}
+    \item \emph{Current Zoology}
+    \item \emph{Journal of Theoretical Biology}
+    \item \emph{International Journal of the Commons}
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Editorial Service (journals only)}
+\begin{innerlist}
+    \item \emph{PLOS Computational Biology}, guest associate editor (2020)
+    \item \emph{Human Computation}, editorial board (2014--)
+    \item \emph{Frontiers in Robotics and AI, Computational Intelligence}, review editorial board (2014--)
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Conference Service}
+\begin{bibsection}[\enskip\textbullet,leftmargin=*]
+    \item Organizer for special session: ``Quantitative Approaches for
+        Conservation, Natural Resource Management, and Energy'', 2021
+        INFORMS Annual Meeting, Anaheim, CA, October 24--27, 2021.
+
+    \item Program Committee: 8th Workshop on Biological Distributed
+        Algorithms~(BDA 2021), Virtual event, 2021.
+
+    \item Program Committee: 2020 IEEE International Conference on
+        Autonomic Computing and Self-Organizing Systems (ACSOS~2020),
+        Washington, DC, 2020.
+
+    \item Program Committee: 2020 IEEE Symposium on Artificial
+        Life~(IEEE ALIFE 2020)
+
+    \item Publicity Chair: 2020 Southwest Robotics Symposium
+        (SWRS~2020), Tempe, AZ, 2020.
+
+    \item Program Committee: 7th Workshop on Biological Distributed
+        Algorithms~(BDA 2019), Toronto, Canada, 2019.
+
+    \item Publicity Chair: 2019 Southwest Robotics Symposium
+        (SWRS~2019), Tempe, AZ, 2019.
+
+    \item Publicity Chair: 2018 International Symposium on Distributed
+        Autonomous Robotic Systems (DARS~2018), Boulder, Colorado, 2018.
+
+    \item Program Committee: 2017 IEEE Symposium on Artificial Life
+        (IEEE ALIFE 2017), Honolulu, Hawaii, 2017.
+
+    \item Program Committee: 2016 International Symposium on Intelligent
+        Control (ISIC~2016), Buenos Aires, Argentina, September 19--22,
+        2016.
+
+    \item Local Organizing Committee: 2015 Conference on Complex
+        Systems~(CCS'15), Tempe, AZ, September 28 -- October~2, 2015.
+
+    \item Co\-/organizer (with Yun Kang) for technical session:
+        ``Complex Systems of Social Insects in Research and Education'',
+        2013 International Symposium on Biomathematics and Ecology
+        Education and Research~(BEER~2013), Arlington, VA,
+        October 11--13, 2013.
+
+    \item Organizer for mini\-/symposium: ``MS19: Optimization and
+        Rationality in Eusocial Insects'', 2013 Society for Mathematical
+        Biology Annual Meeting and Conference~(SMB~2013), Tempe, AZ,
+        June 10--13, 2013.
+
+    \item Organizer/Associate Editor for invited session: ``Correctness
+        by Verification and Design'', 14\textsuperscript{th} IEEE
+        Conference on Intelligent Transportation Systems~(ITSC~2011),
+        Washington, DC, October 5--7, 2011.
+\end{bibsection}
+
+\section{Professional Experience}
+
+\href{http://www.asu.edu/}{\textbf{Arizona State University}},
+Tempe, AZ
+\begin{outerlist}
+
+    \item[] \textit{Assistant Professor}%
+            \hfill \textbf{August 2015}
+            \begin{innerlist}
+                \item Joint Appointment:
+                    \begin{innerlist}
+                        \item School of Computing and Augmented Intelligence
+                        \item School of Sustainability
+                        \item School of Complex Adaptive Systems
+                    \end{innerlist}
+
+                %\item Graduate faculty in Industrial Engineering/Operations
+                %    Research, Sustainability, and Animal Behavior.
+
+                \item Interdisciplinary laboratory focused on decision
+                    making and organization.
+            \end{innerlist}
+
+    \item[] \textit{Associate Research Scientist}%
+            \hfill \textbf{August 2014 to July 2015}\\
+        \textit{Postdoctoral Scholar}%
+            \hfill \textbf{July 2012 to August 2014}
+            \begin{innerlist}
+                \item Supervisor:
+                        \href{http://www.public.asu.edu/~spratt1/}%
+                             {Professor Stephen C.~Pratt}
+
+                \item Novel application of sophisticated quantitative
+                    analysis and modeling techniques to animals, with
+                    social insects as a particular focus.
+
+                \item Development of new algorithms for robotics and
+                    other autonomous systems based on animal behavior,
+                    with focus on distributed decision making.
+
+                \item Supervision of graduate and undergraduate students
+                    in engineering, computer science, and biology in
+                    tasks related to biological analysis and modeling as
+                    well as technological bio\-/mimetic design.
+            \end{innerlist}
+
+\end{outerlist}
+
+\halfblankline
+
+\href{http://www.osu.edu/}{\textbf{The Ohio State University}},
+Columbus, OH
+\begin{outerlist}
+
+    \item[] \textit{Postdoctoral Researcher}%
+            \hfill \textbf{September 2010 to June 2012}
+            \begin{innerlist}
+                \item Funding:~\href{http://www.nfs.gov/}{National Science Foundation} Cyber\-/Physical Systems (ENG, \href{http://www.nsf.gov/div/index.jsp?div=eccs}{ECCS})
+                \begin{innerlist}
+                    \item[$-$] ``Autonomous Driving in Mixed\-/Traffic Urban Environments''
+                        (grant~\href{http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0931669}{\#0931669})
+                    \item[$-$] Supervisor (co\-/PI):
+                        \href{http://www.cse.ohio-state.edu/~paolo/}%
+                             {Professor Paolo A.~G.~Sivilotti}
+                    \item[$-$] PI:
+                        \href{http://www.ece.ohio-state.edu/~umit/}%
+                             {Professor \"{U}mit \"{O}zg\"{u}ner}
+                \end{innerlist}
+
+                \item Development of new approaches to software
+                    verification in the context of hybrid\-/state and
+                    hybrid\-/time dynamical systems.
+
+                \item Supervision of student design project for
+                    novel vehicle\-/to\-/vehicle communications
+                    systems to assist in adaptive cruise control.
+            \end{innerlist}
+
+\end{outerlist}
+
+\halfblankline
+
+\href{http://www.ni.com/}{\textbf{National Instruments}},
+Austin, TX
+\begin{outerlist}
+
+\item[] \textit{Hardware R\&D Intern for Multifunction DAQ}%
+        \hfill \textbf{June 2003 to September 2003}
+\begin{innerlist}
+\item Designed final verification test fixture for use with STC2 MIO
+        products.
+\item Designed and executed study of the effect of varying burn\-/in time
+        on long\-/term drift of common industry voltage references.
+\end{innerlist}
+
+\item[] \textit{Hardware R\&D Intern for Multifunction DAQ}%
+        \hfill \textbf{June 2002 to September 2002}
+\begin{innerlist}
+\item Designed and performed validation tests for 16-bit 800 kHz
+        NI-6120 SMIO DAQ.
+
+\item Designed high\-/quality source to use with NI-5411 arbitrary
+        function generator.
+\end{innerlist}
+
+\end{outerlist}
+
+\halfblankline
+
+\textbf{\href{http://www.ibm.com/}{IBM} Network Storage},
+Research Triangle Park, NC
+\begin{outerlist}
+
+\item[] \textit{Core Systems Software Developer for FlexNAS}%
+        \hfill \textbf{June 2001 to September 2001}
+\begin{innerlist}
+\item Designed and implemented highly available multihop communications
+        subsystem.
+\item Participated in software development of various vital box
+        services.
+\end{innerlist}
+
+\end{outerlist}
+
+\halfblankline
+
+\href{http://www.calltech.com/}{\textbf{CallTech Communications}},
+Columbus, OH
+\begin{outerlist}
+
+\item[] \textit{Information Technology Systems Engineer}%
+        \hfill \textbf{June 1997 to May 2001}
+\begin{innerlist}
+\item Responsible for the acquisition, setup, and administration of all
+        hardware and software systems supporting
+        \href{http://www.netwalk.com/}{NetWalk} Internet service and web
+        presence provider.
+\item Designed and implemented state\-/of\-/the\-/art open\-/source
+        highly available load\-/balancing system supporting thousands of
+        virtual servers.
+\item Developed call\-/center software for clients such as
+        CompuServe, AOL, and Priceline.
+\end{innerlist}
+
+\end{outerlist}
+
+\halfblankline
+
+\textbf{MegaLinx Communications}, Dublin, OH
+\begin{outerlist}
+
+\item[] \textit{Web Developer and Support Representative}%
+        \hfill \textbf{June 1995 to May 1997}
+\begin{innerlist}
+\item Produced web content for commercial clients.
+\item Assisted in administration of UltraSPARC, x86, 680x0, and PowerPC
+        systems.
+\item Developed multi\-/platform open\-/source file\-/sharing solution.
+\item Provided technical support for Internet and web presence
+        customers.
+\end{innerlist}
+
+\end{outerlist}
+
+\section{Professional Memberships}
+
+Institute for Operations Research and the Management Sciences~(INFORMS), Member, 2015--present
+%
+\begin{innerlist}
+\item Applied Probability Society~(2015--present)
+\item Artificial Intelligence Section~(2015--present)
+\item Behavioral Operations Management~(2015--present)
+\item Computing Society~(2015--present)
+\item Decision Analysis Society~(2015--present)
+\item Group Decision and Negotiation~(2015--present)
+\item Optimization Society~(2015--present)
+\item Organization Science Section~(2015--present)
+\item Simulation Society~(2015--present)
+\item Transportation Science and Logistics Society~(2015--present)
+\end{innerlist}
+
+\halfblankline
+
+Institute for Industrial Engineers~(IIE), Member, 2015--present
+%
+\begin{innerlist}
+\item Operations Research division~(2015--present)
+\item Sustainable Development division~(2015--present)
+\end{innerlist}
+
+\halfblankline
+
+Institute for Electrical and Electronics Engineers~(IEEE), Member,
+2002--present
+%
+\begin{innerlist}
+\item IEEE Control Systems Society (2004--present)
+\item IEEE Communications Society (2012--present)
+\item IEEE Computer Society (2009--present)
+\item IEEE Intelligent Transportation Systems Society (2011--present)
+\item IEEE Systems, Man, and Cybernetics Society (2011--present)
+\item IEEE Robotics and Automation Society (2011--present)
+\item IEEE Computational Intelligence Society (2013--present)
+\item IEEE Circuits and Systems Society (2013--present)
+\item IEEE Information Theory Society (2013--present)
+\end{innerlist}
+
+\halfblankline
+
+Game Theory Society, Member, 2016--present
+
+\halfblankline
+
+Animal Behavior Society~(ABS), Member, 2011--present
+
+\halfblankline
+
+International Union for the Study of Social Insects~(IUSSI), Member, 2012--present
+\begin{innerlist}
+\item North American Section (2012--present)
+\end{innerlist}
+
+\halfblankline
+
+Entomological Society of America, Member, 2014--present
+\begin{innerlist}
+\item Southwestern and Pacific Branch (2014--present)
+\item Systematics, Evolution, and Biodiversity Section (2014--present)
+\end{innerlist}
+
+\halfblankline
+
+Society for Mathematical Biology~(SMB), Member, 2012--present
+
+\halfblankline
+
+Society for Industrial and Applied Mathematics~(SIAM), Member, 2015--present
+
+\section{Other Meeting Attendance}
+
+\textbf{Invited Participant}
+\begin{innerlist}
+    \item 12th Annual National Academies Keck Futures Initiative
+        Conference~(NAKFI 2014) on Collective Behavior: From Cells to
+        Societies, November 13--15, 2014
+    \item 2014 Computing Community Consortium Human Computation Roadmap
+        Summit Workshop, June 18--20, 2014
+    \item BEYOND Center for Fundamental Concepts in Science Workshop:
+        Complex Systems Theory and Cancer Biology, February 22--23, 2014
+\end{innerlist}
+
+\textbf{General Participant}
+\begin{innerlist}
+    \item NSF Workshop on Self-organizing Particle Systems, January 8, 2014
+    \item 1\textsuperscript{st} IEEE/ACM Workshop on Signal Processing Advances in Sensor Networks, April~8, 2013
+    \item CoMSES Workshop on ABM in Education, February 28~-- March~2, 2013
+    \item 49\textsuperscript{th} IEEE Conference on Decision and Control, December 15--17, 2010
+\end{innerlist}
+
+\section{Service}
+
+Arizona State University School of Life Sciences Graduate Retreat 2014
+\begin{innerlist}
+    \item Panelist, ``Securing a post-doc'' session
+\end{innerlist}
+
+\halfblankline
+
+Intel International Science and Engineering Fair (ISEF) 2013
+\begin{innerlist}
+    \item Grand Award Judge for Animal Sciences
+\end{innerlist}
+
+\halfblankline
+
+\href{http://opendoor.asu.edu}{Night of the Open Door},
+\href{http://www.asu.edu}{Arizona State University},
+2013
+%
+\begin{innerlist}
+    \item Staffed the ``Ants of Arizona'' exhibit
+    \item Answered questions about ants and research related to them
+\end{innerlist}
+
+\halfblankline
+
+Recent contributor to several open\-/source software projects, including:
+\begin{innerlist}
+    \item \href{http://vim-latex.sourceforge.net/}{Vim\-/LaTeX} suite
+    \item \href{http://vimperator.org}{Vimperator} and
+        \href{http://dactyl.sourceforge.net/pentadactyl/index}{Pentadactyl}
+        Firefox extensions
+    \item \href{http://git-scm.com}{Git} distributed version control
+        system
+    \item \href{http://www.selenic.com/mercurial/}{Mercurial} distributed version control
+        system
+    \item Personal projects archived at
+        \url{http://hg.tedpavlic.com/}
+\end{innerlist}
+
+\halfblankline
+
+Frequent contributor to \href{http://www.wikipedia.org/}{Wikipedia}
+%
+\begin{innerlist}
+    \item Significant contributions to articles on control theory,
+        electronics, and signals and systems.
+\end{innerlist}
+
+\halfblankline
+
+Contributor to \href{http://www.quora.com/}{Quora}
+%
+\begin{innerlist}
+    \item Contributions to articles on thermodynamics, chaos theory,
+        electronics, and evolutionary biology.
+\end{innerlist}
+
+\halfblankline
+
+\href{http://www.osufirst.org/}{OSU FIRST Robotics Team},
+\href{http://www.osu.edu}{The Ohio State University}, 2000--2004
+\begin{innerlist}
+\item Introduced middle school and high school students to science and
+        technology by participating with them in national robotics
+        competitions.
+\item Led 2002 team to regional silver medal
+        \href{http://www.firstwiki.org/Engineering_Inspiration_Award}
+             {\emph{Engineering Inspiration Award}}.
+\item \emph{Lead Team Mentor}, 2002--2004
+\item \emph{Component Design Team Lead Mentor}, 2001--2002
+\end{innerlist}
+
+\halfblankline
+
+Ohio Science Olympiad state competition, Robot Ramble Event, 2003
+%
+\begin{innerlist}
+    \item Supervised setup and judging of event for middle-school and
+        high-school students
+\end{innerlist}
+
+\halfblankline
+
+Director of Computers,
+\href{http://ec.osu.edu/}{Engineers' Council},
+\href{http://www.osu.edu/}{The Ohio State University}, 2002
+
+\halfblankline
+
+\href{http://www.linuxvirtualserver.org/}
+     {Linux Virtual Server Project}, 1999--2000
+\begin{innerlist}
+\item Early member of the team that formed the open\-/source project that
+        is now an important load balancing solution for the Linux
+        software platform.
+\end{innerlist}
+
+\halfblankline
+
+\href{http://www.gcfn.org/}
+     {Greater Columbus Free\-/Net}, 1995--1997
+\begin{innerlist}
+\item Provided technical support services.
+\end{innerlist}
+
+\halfblankline
+
+CompuTeen Bulletin Board System, 1993--1995
+\begin{innerlist}
+\item Administrated dial\-/up bulletin board system.
+\item Founded and administrated TeenLiNK, an international electronic
+        mail network that spread through the United States, Canada, and
+        Australia and delivered mail over a series of electronic dial\-/up
+        drop offs.
+\end{innerlist}
+
+\section{Application Areas}
+
+Autonomous and Unmanned Vehicles, Flexible Manufacturing Systems,
+Distributed Power Generation, Intelligent Lighting, Power Demand
+Response, Microgrids, Smart Grids
+
+\section{Hardware and Software Skills}
+
+Analog and Digital Electronics:
+%
+\begin{innerlist}
+    \item Bipolar and FET implementations of continuous and switched
+        amplifiers, modulators, converters, and filters
+
+    \item Computer\-/Aided Design Tools: Cadence OrCAD, NI Multisim, SPICE, pst\-/circ
+\end{innerlist}
+
+\halfblankline
+
+Embedded and Real\-/time Systems:
+%
+\begin{innerlist}
+    \item Software and hardware development with several MCU and
+        DSP platforms (e.g., Motorola MCU's, Texas Instruments DSP's, Atmel
+        ATmega MCU's, Microchip PIC MCU's, and others)
+\end{innerlist}
+
+\halfblankline
+
+Instrumentation, Control, Data Acquisition, Test, and Measurement:
+%
+\begin{innerlist}
+    \item \href{http://www.dspaceinc.com/}{dSPACE} hardware (e.g.,
+        RTI1104) and Control Desk software,
+        \href{http://www.mathworks.com/products/simulink/}{Simulink},
+        \href{http://www.ni.com/}{LabVIEW} and other
+        \href{http://www.ni.com}{National Instruments}
+        control and data acquisition hardware and software (e.g., MIO,
+        SMIO, DSA, DMM, and others), Hewlett\-/Packard and Agilent
+        bench\-/top equipment
+\end{innerlist}
+
+\halfblankline
+
+Computer Programming:
+%
+\begin{innerlist}
+    \item C, C$+$$+$, Java, JavaScript, NetLogo, Pascal, Perl, PHP,
+        Lisp, UNIX shell scripting (including POSIX.2), GNU make,
+        AppleScript, SQL, MySQL, and others
+\end{innerlist}
+
+\halfblankline
+
+Numerical Analysis:
+%
+\begin{innerlist}
+    \item \Matlab, R, Maple, Mathematica
+\end{innerlist}
+
+\halfblankline
+
+Version Control and Software Configuration Management:
+%
+\begin{innerlist}
+    \item DVCS (Mercurial/MQ, Git/StGit), VCS (RCS, CVS, SVN, SCCS), and
+        others
+\end{innerlist}
+
+\halfblankline
+
+\href{http://www.mathworks.com/products/matlab/}{\Matlab} skill set:
+%
+\begin{innerlist}
+    \item Linear algebra, Fourier transforms, Monte Carlo analysis,
+        nonlinear numerical methods, polynomials, statistics,
+        $N$-dimensional filters, visualization
+
+    \item Toolboxes: communications, control system, filter design,
+        genetic algorithm and direct search, signal processing, system
+        identification
+\end{innerlist}
+
+\halfblankline
+
+Software Verification:
+%
+\begin{innerlist}
+    \item KeY, PRISM, KeYmaera
+\end{innerlist}
+
+\halfblankline
+
+Information/Internet Technology:
+%
+\begin{innerlist}
+    \item Networking (UDP, TCP, ARP, DNS, Dynamic
+        routing), Services (Apache, SQL, MediaWiki, POP, IMAP, SMTP,
+        application\-/specific daemon design)
+\end{innerlist}
+
+\halfblankline
+
+Desktop Editing and Productivity Software:
+%
+\begin{innerlist}
+    \item Vim, Emacs, Eclipse
+    \item \TeX{} (\LaTeX{}, \BibTeX{}, PSTricks),
+    \item Microsoft Office, OpenOffice.org, LibreOffice, Corel
+        WordPerfect, Google Docs
+    \item GIMP, InkScape
+\end{innerlist}
+
+\halfblankline
+
+Operating Systems:
+%
+\begin{innerlist}
+    \item Microsoft Windows family, Apple OS X, IBM OS/2, Linux, BSD,
+        IRIX, AIX, Solaris, and other UNIX variants
+\end{innerlist}
+
+\section{Expertise}
+
+Mathematics:
+%
+\begin{innerlist}
+    \item Applied Mathematics, Real and Complex Analysis, Measure
+        Theory, Differential Geometry, Game Theory, Graph Theory,
+        Combinatorics
+\end{innerlist}
+
+\halfblankline
+
+Control Theory and Engineering:
+%
+\begin{innerlist}
+    \item Linear and Nonlinear Systems Theory, Feedback, Variable
+        Structure Systems and Sliding Modes, Distributed and Intelligent
+        Control, Dynamic Optimization, Biomimicry, Bioinspiration,
+        Hybrid and CyberPhysical Systems
+\end{innerlist}
+
+\halfblankline
+
+Communications and Signal Processing:
+%
+\begin{innerlist}
+    \item Probability, Random Variables, Stochastic Processes,
+        Information Theory, Estimation, Networks
+\end{innerlist}
+
+\halfblankline
+
+Computer Science and Engineering:
+%
+\begin{innerlist}
+    \item Model Checking (automated, distributed, hybrid,
+        probabilistic), Hybrid Automata, Software Verification,
+        Component\-/Based Reusable Software
+\end{innerlist}
+
+\halfblankline
+
+Natural and Social Sciences (Biology, Neuroscience, Psychology, Anthropology):
+%
+\begin{innerlist}
+    \item Behavioral Ecology, Foraging Theory, Altruism, Impulsiveness,
+        Evolution
+\end{innerlist}
+
+\section{Awards}
+
+\href{http://www.nsf.gov/}{National Science Foundation}
+\begin{innerlist}
+\item \href{http://www.nsfgk12.org/}{GK\-/12 Graduate Fellowship}, 2006--2007
+\item \href{http://www.nsf.gov/grfp}
+           {Graduate Research Fellowship} Honorable Mention, 2005
+\end{innerlist}
+
+\halfblankline
+
+\href{http://www.osu.edu}{The Ohio State University}
+\begin{innerlist}
+\item \href{http://www.gradsch.osu.edu/graduate-school-fellowships-for-first-year-graduate-students.html}
+           {Dean's Distinguished University (DDU) Graduate Fellowship}, 2004--2010
+\item Electrical and Computer Engineering Bradshaw Scholarship,
+        2002--2004
+\item Electrical and Computer Engineering Shafstall Scholarship,
+        2001--2003
+\item University Scholarship, 1999--2003
+\end{innerlist}
+
+\section{Popular Media}
+
+\begin{bibsection}
+
+    \item Pavlic, T.P. ``Be Undisciplined. Lose Your Innocence. Get to
+        Work.''  In: \emph{TEDxASU 2017: Innovators}, March 23, 2017.\\
+        \url{https://youtu.be/9GWXCRetOjk?list=PLsRNoUx8w3rOEkwS6gZashGbH8otAs3l4}
+
+    \item Pavlic, T.P. ``Cognition in Ants, Robots, and Pre-biotic Chemistries: A
+        Science on Google+ HOA with Dr. Ted Pavlic.'' Interview by Chris
+        Robinson. \emph{Science on Google+: A Public Database}, April
+        15, 2015.
+        \url{https://plus.google.com/u/0/events/cmbuh4hdnc558tqg1p86dqna35k}
+
+    \item Sigfried, Tom. ``If the world is a computer, life is an
+        algorithm'', \emph{Science News: Context}, June 18, 2014.
+        \url{https://www.sciencenews.org/blog/context/if-world-computer-life-algorithm}
+
+    \item ``The Free \& Unfree: Open Source Everywhere~-- How a Global
+        Coding Coalition Built an Open Source Superserver'',
+        \emph{Wired}, 12(06), June 2004.
+
+\end{bibsection}
+
+\section{Security Clearance}
+
+Department of Defense Top Secret SCI with polygraph (expired: 2002)
+
+% \section{Citizenship}
+%
+% USA
+
+\section{References Available to Contact}
+
+\href
+{http://www.public.asu.edu/~spratt1/}
+{\textbf{Dr.~Stephen C.~Pratt}}
+(e\-/mail:~\href{mailto:stephen.pratt@asu.edu}{stephen.pratt@asu.edu}; phone:~+1-480-727-9425)
+%
+\begin{innerlist}
+    \item Associate Professor,
+        \href{http://sols.asu.edu/}{School of Life Sciences},
+        \href{http://www.asu.edu/}{Arizona State University}
+
+    \item[$\diamond$] School of Life Sciences, PO Box 874501, Tempe, AZ
+        85287-4501
+
+    \item[$\star$] \emph{Dr.~Pratt is my current postdoctoral supervisor.}
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Dr.~Spring M.~Berman}
+(e\-/mail:~\href{mailto:Spring.Berman@asu.edu}{Spring.Berman@asu.edu}; phone:~+1-480-965-4431)
+%
+\begin{innerlist}
+    \item Assistant Professor,
+        \href{http://sols.asu.edu/}{Mechanical and Aerospace Engineering},
+        \href{http://www.asu.edu/}{Arizona State University}
+
+    \item[$\diamond$] School for Engineering of Matter, Transport, and
+        Energy, PO Box 876106, Tempe, AZ
+        85287-6106
+
+    \item[$\star$] \emph{Dr.~Berman is collaborator on my bio\-/mimicry work.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://cosmos.asu.edu/}
+{\textbf{Dr.~Paul C.~W.~Davies}}
+(e\-/mail:~\href{mailto:Paul.Davies@asu.edu}{Paul.Davies@asu.edu}; phone:~+1-480-965-3240)
+%
+\begin{innerlist}
+    \item Regents Professor and Director,
+        \href{http://beyond.asu.edu/}{Beyond Center for Fundamental Concepts in Science},
+        \href{http://www.asu.edu/}{Arizona State University}
+
+    \item[$\diamond$] Beyond Center for Fundamental Concepts in Science,
+        P.O. Box 871504, Tempe, AZ
+        85287-1504
+
+    \item[$\star$] \emph{Dr.~Davies is collaborator on my
+        origins\-/of\-/life work.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://emergence.asu.edu/}
+{\textbf{Dr.~Sara Imari Walker}}
+(e\-/mail:~\href{mailto:sara.i.walker@asu.edu}{sara.i.walker@asu.edu}; phone:~+1-480-727-2394)
+%
+\begin{innerlist}
+    \item Assistant Professor,
+        \href{http://sese.asu.edu/}{School of Earth and Space Exploration},
+        \href{http://www.asu.edu/}{Arizona State University}
+
+    \item[$\diamond$] ASU School of Earth and Space Exploration,
+        PO Box 871404, Tempe, AZ
+        85287-1404
+
+    \item[$\star$] \emph{Dr.~Walker is collaborator on my
+        origins\-/of\-/life work.}
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Dr.~Pietro Michelucci}
+(e\-/mail:~\href{mailto:pem@thinksplash.com}{pem@thinksplash.com}; phone: +1-571-235-3288)
+\begin{innerlist}
+    \item Principal,
+        ThinkSplash LLC, Washington, DC
+
+    \item[$\star$] \emph{I co\-/authored a chapter in the \emph{Handbook
+        of Human Computation}, for which Dr.~Michelucci was the
+        editor\-/in\-/chief.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://www.cse.ohio-state.edu/~paolo/}
+{\textbf{Dr.~Paolo A.~G.~Sivilotti}}
+(e\-/mail:~\href{mailto:sivilotti.1@osu.edu}{sivilotti.1@osu.edu}; phone: +1-614-292-5835)
+\begin{innerlist}
+    \item Associate Professor,
+        \href{http://www.cse.ohio-state.edu/}{Computer Science and Engineering},
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
+        OH  43210
+
+    \item[$\star$] \emph{Dr.~Sivilotti is my past postdoctoral
+        supervisor.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://www.cse.ohio-state.edu/~weide/}
+{\textbf{Dr.~Bruce W.~Weide}}
+(e\-/mail:~\href{mailto:weide.1@osu.edu}{weide.1@osu.edu}; phone:~+1-614-292-1517)
+\begin{innerlist}
+    \item Professor and Associate Chair,
+        \href{http://www.cse.ohio-state.edu/}{Computer Science and
+        Engineering}\\
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
+        OH  43210
+
+    \item[$\star$] \emph{Dr.~Weide is a co\-/PI on the NSF grant that
+        funded my previous postdoctoral position.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://hamilton-lab.wikidot.com/}
+{\textbf{Dr.~Ian M.~Hamilton}}
+(e\-/mail:~\href{mailto:hamilton.598@osu.edu}{hamilton.598@osu.edu}; phone:~+1-614-292-9147)
+%
+\begin{innerlist}
+    \item Assistant Professor,
+        \href{http://eeob.osu.edu/}{Evolution, Ecology, and Organismal Biology}
+        and
+        \href{http://www.math.ohio-state.edu/}{Mathematics}\\
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] 300 Aronoff Laboratory, 318 W.~12th Avenue,
+        Columbus, OH  43210
+
+    \item[$\star$] \emph{Dr.~Hamilton has been a valuable
+        interdisciplinary resource to me.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://www.ece.osu.edu/~passino/}
+{\textbf{Dr.~Kevin M.~Passino}}
+(e\-/mail:~\href{mailto:passino.1@osu.edu}{passino.1@osu.edu}; phone:~+1-614-312-2472)
+%
+\begin{innerlist}
+    \item Professor,
+        \href{http://www.ece.osu.edu/}{Electrical and Computer
+        Engineering},
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
+        OH  43210
+
+    \item[$\star$] \emph{Dr.~Passino was my graduate adviser.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://www.ece.osu.edu/~serrani/}
+{\textbf{Dr.~Andrea Serrani}}
+(e\-/mail:~\href{mailto:serrani.1@osu.edu}{serrani.1@osu.edu}; phone:~+1-614-292-4976)
+%
+\begin{innerlist}
+    \item Associate Professor,
+        \href{http://www.ece.osu.edu/}{Electrical and Computer Engineering}\\
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
+        OH  43210
+
+    \item[$\star$] \emph{Dr.~Serrani was a member of my doctoral
+        committee.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://feh.osu.edu/staff/view.html?UID=798}
+{\textbf{Dr.~Richard J.~Freuler}}
+(e\-/mail:~\href{mailto:freuler.1@osu.edu}{freuler.1@osu.edu}; phone: +1-614-688-0499)
+\begin{innerlist}
+    \item Professor of Practice,
+        \href{http://mae.osu.edu/}{Mechanical and Aerospace Engineering}\\
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] 244 Hitchcock Hall, 2070 Neil Ave., Columbus, OH  43210
+
+    \item[$\star$] \emph{Dr.~Freuler coordinates the Fundamentals of
+        Engineering for Honors program in which I served as an
+        instructor early in my academic career.}
+\end{innerlist}
+
+\halfblankline
+
+\href
+{http://mae.osu.edu/people/staab.1}
+{\textbf{Dr.~George H.~Staab}}
+(e\-/mail:~\href{mailto:staab.1@osu.edu}{staab.1@osu.edu}; phone: +1-614-292-7920)
+\begin{innerlist}
+    \item Associate Professor,
+        \href{http://mae.osu.edu/}{Mechanical and Aerospace Engineering}\\
+        \href{http://www.osu.edu/}{The Ohio State University}
+
+    \item[$\diamond$] W192 Scott Laboratory, 201 W.~19th Ave., Columbus, OH  43210
+
+    \item[$\star$] \emph{Dr.~Staab is the faculty adviser for the OSU
+        FIRST robotics and engineering outreach group of which I was a
+        four\-/year member and team leader.}
+\end{innerlist}
+
+\halfblankline
+
+\textbf{Dr.~Clayton Daigle}
+(e\-/mail:~\href{mailto:Clayton.Daigle@silabs.com}{Clayton.Daigle@silabs.com}; phone: +1-512-532-5935)
+\begin{innerlist}
+    \item Mixed-Signal Engineer,
+        \href{http://www.silabs.com/}{Silicon Laboratories}, Austin, TX
+
+    \item[$\star$] \emph{Dr.~Daigle was my direct supervisor when I
+        worked for National Instruments as an analog hardware R\&D
+        engineer.}
+\end{innerlist}
+
+% The ``More Info'' section may not be necessary; make sure it's short
+% so it doesn't prevent people from seeing references available to
+% contact.
+\section{More Information}
+
+More information and auxiliary documents can be found at\\%
+\url{http://www.tedpavlic.com/facjobsearch/}.
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% END CV DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------%
+% The following is copyright and licensing information for
+% redistribution of this LaTeX source code; it also includes a liability
+% statement. If this source code is not being redistributed to others,
+% it may be omitted. It has no effect on the function of the above code.
+%----------------------------------------------------------------------%
+% Copyright (c) 2025 by Theodore P. Pavlic
+%
+% Permission is hereby granted, free of charge, to any person obtaining
+% a copy of this software and associated documentation files (the
+% “Software”), to deal in the Software without restriction, including
+% without limitation the rights to use, copy, modify, merge, publish,
+% distribute, sublicense, and/or sell copies of the Software, and to
+% permit persons to whom the Software is furnished to do so, subject to
+% the following conditions:
+%
+% The above copyright notice and this permission notice shall be
+% included in all copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+% EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+% MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+% IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+% CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+% TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+% SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+%----------------------------------------------------------------------%
