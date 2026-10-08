@@ -138,7 +138,8 @@ It produces this (the footer is left out here):
 To regenerate the two images in images/ (both made with lualatex):
   cv-page-1.png: build cv.tex, then
     pdftoppm -r 130 -f 1 -l 1 -png cv.pdf p
-    magick p-01.png -colors 48 -strip PNG8:images/cv-page-1.png
+    magick p-01.png -trim +repage -bordercolor white -border 24 \
+        -colors 48 -strip PNG8:images/cv-page-1.png
   worked-example.png: copy cv.tex, put the example above after
     \begin{document} (keep the \newlength lines for \rcollength and
     \spacewidth from cv.tex's Contact section before it), change
