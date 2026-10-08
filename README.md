@@ -7,6 +7,12 @@ The template can produce an accessible, tagged PDF (one that screen readers and 
 - [Preliminaries](#preliminaries)
   - [Required LaTeX Packages](#required-latex-packages)
   - [Building the CV](#building-the-cv)
+- [Using the Template](#using-the-template)
+  - [Structure of a CV](#structure-of-a-cv)
+  - [Lists](#lists)
+  - [A Worked Example](#a-worked-example)
+  - [Reference Lists](#reference-lists)
+  - [Spacing and Links](#spacing-and-links)
 - [Accessible (Tagged) PDF](#accessible-tagged-pdf)
   - [What Is Tagged](#what-is-tagged)
   - [Images](#images)
@@ -51,6 +57,72 @@ The same `cv.tex` builds three ways. Run LaTeX until the PDF converges (which is
 
 The `.latexmkrc` included in this repository makes plain `latexmk` use `pdflatex`. Use the DVI route only if PostScript output is required; the PDF it produces has no structure for assistive technology.
 
+## Using the Template
+
+Edit `cv.tex` from the line `\begin{document}` onward to write your CV. The comments near the top of the file say which parts to edit and which to skip over. The comments next to each macro (under "HELPER COMMANDS") give the full usage; this section is a summary.
+
+### Structure of a CV
+
+Start with `\makeheading{Your Name}`, then write one `\section{Title}` per section. Section titles are set in the left margin, and the text of the section starts on the same line as its title. The heading can also carry something on the right, such as `\makeheading[\emph{Curriculum vitae}]{Your Name}`, or a picture (see [Images](#images)).
+
+### Lists
+
+All of the entries in a CV are `cvlist` lists. A list is tight by default, which suits the details under an entry. Add `[loose]` for the entries of a section (jobs, courses, awards), which puts space between them and makes the start of the list a preferred place for a page to break. Lists nest up to three deep, and tight and loose lists can be mixed. Inside a list:
+
+| Command                  | Item                                                       |
+| ------------------------ | ---------------------------------------------------------- |
+| `\item`                  | has a bullet                                               |
+| `\entry`                 | has no bullet (use for the heading line of an entry)       |
+| `\marker{alt text}{$-$}` | has a symbol you choose instead of a bullet, with alt text |
+
+### A Worked Example
+
+This is the pattern the template uses for each entry: a loose list whose items are headings with a right-aligned date, each followed by a tight list of details. The reference list at the end is explained in the next section.
+
+```latex
+\section{Experience}
+
+\begin{cvlist}[loose]
+
+    \entry \textbf{Assistant Professor},
+        \href{https://www.example.edu/}{Example University}
+        \hfill \textbf{August 2020 to present}
+    \begin{cvlist}
+        \item Teach graduate courses in simulation
+        \item Advise four doctoral students
+        \begin{cvlist}
+            \marker{dash}{$-$} Two are co-advised with the biology department
+        \end{cvlist}
+    \end{cvlist}
+
+    \entry \textbf{Postdoctoral Scholar},
+        \href{https://www.example.org/}{Example Institute}
+        \hfill \textbf{June 2017 to July 2020}
+    \begin{cvlist}
+        \item Developed models of collective behavior
+    \end{cvlist}
+
+\end{cvlist}
+
+\section{Publications}
+
+\begin{bibenum}
+    \item Doe, J. and R.~Roe. A title that goes here.
+        \emph{Journal of Examples}, 1:1--10. 2020.
+        \doi{10.1000/example}
+\end{bibenum}
+```
+
+### Reference Lists
+
+Use `bibenum` for a numbered list (publications, for instance) and `bibsection` for an unnumbered one, with `\item` for each reference. Both give each reference a hanging indent. Numbers in `bibenum` continue from one list to the next, so give `\restartlist{bibenum}` where the numbering should start over.
+
+### Spacing and Links
+
+- `\blankline` and `\halfblankline` add a full or half line of space where a page break is welcome. Put each on a line of its own between paragraphs, not inside one.
+- `\email{you@example.edu}` is a link that opens a mail message, and `\url{...}` and `\href{url}{text}` are the usual links. In the template, links are dark blue.
+- `\doi{10.1000/example}` links a DOI.
+
 ## Accessible (Tagged) PDF
 
 On the pdfLaTeX and LuaLaTeX routes, `cv.tex` turns on PDF tagging (a PDF 2.0 file that declares PDF/UA-2) and sets the document language to US English. The setup is in the block at the top of `cv.tex` that is marked as one to skip over, and it does nothing on the DVI route or on an older LaTeX format.
@@ -76,7 +148,7 @@ The `\makeheading` comments in `cv.tex` show a photograph placed across from the
 
 ### Writing Accessible Content
 
-- Use `\begin{cvlist}` for lists. It is tight by default, for the details under an entry, and `\begin{cvlist}[loose]` adds space between entries. Inside, `\item` gives a bulleted item, `\entry` gives an item with no bullet, and `\marker{alternative text}{$...$}` gives an item with a symbol of your own, as in `\marker{dash}{$-$}`. The alternative text is what a screen reader speaks; without it, a screen reader is given a description built from the TeX source.
+- Use `cvlist` for lists (see [Lists](#lists)). `\entry` and `\marker` exist because an empty `\item[]` is replaced by the default bullet in a tagged PDF. The alternative text in `\marker{alternative text}{$...$}` is what a screen reader speaks; without it, a screen reader is given a description built from the TeX source.
 - Use `\mathalt{alternative text}{$...$}` for a math symbol inside running text, as in `\mathalt{pi}{$\pi$}-calculus`.
 - To set list options, use `label=...` keys. The `shortlabels` option of `enumitem` is not available in a tagged PDF.
 - Make link text meaningful. A link whose text is only "click here" tells a screen reader user nothing.
