@@ -58,7 +58,7 @@ On the pdfLaTeX and LuaLaTeX routes, `cv.tex` turns on PDF tagging (a PDF 2.0 fi
 ### What Is Tagged
 
 - Every `\section` is a real heading (and a bookmark), even though its title is set in the left margin.
-- The lists (`outerlist`, `innerlist`, `bibsection`, `bibenum`, and so on) are tagged as lists with items.
+- The lists (`cvlist`, `bibsection`, and `bibenum`) are tagged as lists with items.
 - Links (including e-mail addresses and URLs) are tagged as links.
 - The contact block is not a table, so screen readers do not announce a data table.
 - Page numbers in the footer are marked as artifacts, so they are not read as part of the content.
@@ -76,8 +76,8 @@ The `\makeheading` comments in `cv.tex` show a photograph placed across from the
 
 ### Writing Accessible Content
 
-- Write `\item[{}]`, not `\item[]`, for a list item with no bullet. In a tagged PDF, an empty `\item[]` is replaced by the default bullet.
-- Wrap math used as a marker in `\mathalt{alternative text}{$...$}`, as in `\item[\mathalt{dash}{$-$}]`. Without it, a screen reader is given a description built from the TeX source.
+- Use `\begin{cvlist}` for lists. It is tight by default, for the details under an entry, and `\begin{cvlist}[loose]` adds space between entries. Inside, `\item` gives a bulleted item, `\entry` gives an item with no bullet, and `\marker{alternative text}{$...$}` gives an item with a symbol of your own, as in `\marker{dash}{$-$}`. The alternative text is what a screen reader speaks; without it, a screen reader is given a description built from the TeX source.
+- Use `\mathalt{alternative text}{$...$}` for a math symbol inside running text, as in `\mathalt{pi}{$\pi$}-calculus`.
 - To set list options, use `label=...` keys. The `shortlabels` option of `enumitem` is not available in a tagged PDF.
 - Make link text meaningful. A link whose text is only "click here" tells a screen reader user nothing.
 

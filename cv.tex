@@ -410,19 +410,45 @@
 
 %%% LISTS
 
-% NOTE: write \item[{}] (not \item[]) for an item with no bullet; tagged
-% lists treat an empty \item[] as a request for the default label.
+% THE CV LIST: cvlist
+%
+%   \begin{cvlist}              % tight: details under an entry
+%       \item ...               % an item with a bullet
+%       \entry ...              % an item with no bullet
+%       \marker{alt text}{$\dagger$} ...
+%                               % an item with your own marker symbol
+%   \end{cvlist}
+%
+%   \begin{cvlist}[loose]       % space between entries, and a page break
+%       \entry ...              % is preferred before the list
+%   \end{cvlist}
+%
+% Lists nest (up to three deep), and ``tight'' and ``loose'' lists can be
+% mixed. Use a ``loose'' list for the entries of a section (jobs, courses,
+% awards), and a ``tight'' list for the details under each entry.
+%
+% \marker{alt text}{symbol} is for symbols that stand in for a bullet.
+% The alternative text (``dash'', ``star'', and so on) is what a screen
+% reader speaks in a tagged PDF.
+\newcommand{\entry}{\item[{}]}
+\newcommand{\marker}[2]{\item[\mathalt{#1}{#2}]}
+
+% --- Skip over the rest of this section unless you want to change how
+% --- the lists are built.
+%
+% NOTE: \entry is \item[{}] rather than \item[] because tagged lists
+% treat an empty \item[] as a request for the default label.
 %
 % Lists are built with enumitem's \newlist and configured with keys and
 % kernel hooks only (no patching of \item or \end...), which keeps them
 % valid when the PDF is tagged. Tagged lists accept plain lengths in
 % \setlist, but not enumitem's ``leftmargin=*'', calc expressions, or the
 % before/after keys, so those are replaced by a measured length
-% (\listindent) and by hooks that run after the list ends.
-%   * outer-type lists prefer a page break before the list begins (the
+% (\listindent) and by hooks that run before and after the list.
+%   * loose lists prefer a page break before the list begins (the
 %     \pagebreak[2] in a hook that runs before the list), so the first
 %     item is not separated from the line that precedes it
-%   * several lists remove some of the space that follows them
+%   * loose lists remove some of the space that follows them
 % (The width is measured when the document starts, in the body font,
 % because the preamble's font is not the one the lists are typeset in.)
 % (\bibbulletindent is the left margin of a bibsection list that has a
@@ -437,49 +463,26 @@
 \newcommand*{\listendspace}[1]{\AddToHook{env/#1/after}{\vspace{-0.6\baselineskip}}}
 \newcommand*{\listbreakbefore}[1]{\AddToHook{env/#1/before}{\pagebreak[2]}}
 
-% An itemize-style list with lots of space between items
-%
-% Usage:
-%   \begin{outerlist}
-%       \item ...    % (or \item[{}] for no bullet)
-%   \end{outerlist}
-\newlist{outerlist}{itemize}{3}
-    \setlist[outerlist]{label=\enskip\textbullet,leftmargin=\listindent}
-    \listendspace{outerlist}
-    \listbreakbefore{outerlist}
-
-% An environment IDENTICAL to outerlist that has better pre-list spacing
-% when used as the first thing in a \section
-%
-% Usage:
-%   \begin{lonelist}
-%       \item ...    % (or \item[{}] for no bullet)
-%   \end{lonelist}
-\newlist{lonelist}{itemize}{3}
-    \setlist[lonelist]{label=\enskip\textbullet,leftmargin=\listindent,
-        nosep,itemsep=4pt plus 2pt minus 1pt,parsep=4pt plus 2pt minus 1pt}
-    \listendspace{lonelist}
-    \listbreakbefore{lonelist}
-
-% An itemize-style list with little space between items
-%
-% Usage:
-%   \begin{innerlist}
-%       \item ...    % (or \item[{}] for no bullet)
-%   \end{innerlist}
-\newlist{innerlist}{itemize}{3}
-    \setlist[innerlist]{label=\enskip\textbullet,leftmargin=\listindent,nosep}
-
-% An environment IDENTICAL to innerlist that has better pre-list spacing
-% when used as the first thing in a \section
-%
-% Usage:
-%   \begin{loneinnerlist}
-%       \item ...    % (or \item[{}] for no bullet)
-%   \end{loneinnerlist}
-\newlist{loneinnerlist}{itemize}{3}
-    \setlist[loneinnerlist]{label=\enskip\textbullet,leftmargin=\listindent,nosep}
-    \listendspace{loneinnerlist}
+% The two kinds of list that cvlist chooses between.
+\newlist{cvlisttight}{itemize}{3}
+    \setlist[cvlisttight]{label=\enskip\textbullet,leftmargin=\listindent,nosep}
+\newlist{cvlistloose}{itemize}{3}
+    \setlist[cvlistloose]{label=\enskip\textbullet,leftmargin=\listindent}
+    \listendspace{cvlistloose}
+    \listbreakbefore{cvlistloose}
+\newcommand*{\cvlistloosename}{loose}
+\NewDocumentEnvironment{cvlist}{O{}}
+    {\def\cvlistdensity{#1}%
+     \ifx\cvlistdensity\cvlistloosename
+         \begin{cvlistloose}%
+     \else
+         \begin{cvlisttight}%
+     \fi}
+    {\ifx\cvlistdensity\cvlistloosename
+         \end{cvlistloose}%
+     \else
+         \end{cvlisttight}%
+     \fi}
 
 %%% ALTERNATIVE TEXT FOR FORMULAS
 
@@ -488,7 +491,7 @@
 % reader speaks) in place of the default description built from its TeX
 % source. Use it for symbols used as markers or bullets, as in
 %
-%   \item[\mathalt{dagger}{$\dagger$}] ...
+%   \marker{dagger}{$\dagger$} ...
 %
 % Without PDF tagging, it just typesets the math. (The tagged version
 % uses a tagging socket of LaTeX's math code, so it is skipped where the
@@ -641,9 +644,9 @@ Tempe, AZ  85287-8809  USA}%
 % agents (e.g., for communications, control, software, electronics, and
 % sustainability) and the analysis of biological phenomena (e.g.,
 % self-organization, ecological rationality)
-% \begin{innerlist}
+% \begin{cvlist}
 % \item More information and auxiliary documents can be found at\\\url{http://www.tedpavlic.com/facjobsearch/}
-% \end{innerlist}
+% \end{cvlist}
 
 % For industry-focused CV, ``Qualifications and Interests'' instead
 \section{Research Interests}
@@ -662,11 +665,11 @@ bio-inspiration
 
 %\section{Availability}
 %
-%\begin{loneinnerlist}
+%\begin{cvlist}
 %    \item Start time is negotiable; may be possible to start immediately
 %    \item Geographic location is flexible, but there is preference
 %        for Tempe, AZ
-%\end{loneinnerlist}
+%\end{cvlist}
 %
 %\section{Security Clearance}
 %
@@ -684,17 +687,17 @@ bio-inspiration
 \textbf{Assistant Professor},
             \href{http://www.asu.edu/}{Arizona State University}
             \hfill {August 2015 to present}
-\begin{innerlist}
+\begin{cvlist}
 
-    \item[{}] \href{http://cidse.engineering.asu.edu/}{School of
+    \entry \href{http://cidse.engineering.asu.edu/}{School of
         Computing and Augmented Intelligence}~(50\%)
-    \item[{}] \href{http://sustainability.asu.edu/}{School of
+    \entry \href{http://sustainability.asu.edu/}{School of
         Sustainability}~(25\%)
-    \item[{}] \href{http://sustainability.asu.edu/}{School of Complex
+    \entry \href{http://sustainability.asu.edu/}{School of Complex
         Adaptive Systems}~(25\%)
-    \begin{innerlist}
+    \begin{cvlist}
         \item Affiliations:
-            \begin{innerlist}
+            \begin{cvlist}
                 \item \href{http://sols.asu.edu}{School of Life Sciences} (Adjunct Professor)
                 \item \href{http://biomimicry.asu.edu/}{The Biomimicry Center} (Associate Director of Research)
                 \item \href{https://complexity.asu.edu/asu-sfi-center-biosocial-complex-systems}{ASU--Santa Fe Institute Center for Biosocial Complex Systems} (ASU--SFI Fellow)
@@ -704,10 +707,10 @@ bio-inspiration
                 \item \href{http://sustainability.asu.edu/biodiversityoutcomes/}{Center for Biodiversity Outcomes}
                 \item \href{http://globalsecurity.asu.edu/}{Global Security Initiative}
                 \item \href{https://biodesign.asu.edu/biocomputing-security-and-society}{Center for Biocomputation, Security, and Society}
-            \end{innerlist}
-    \end{innerlist}
+            \end{cvlist}
+    \end{cvlist}
 
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -720,76 +723,76 @@ bio-inspiration
 \textbf{Associate Research Scientist},
             \href{http://www.asu.edu/}{Arizona State University}
             \hfill {August 2014 to July 2015}
-\begin{innerlist}
+\begin{cvlist}
 
-    \item[{}] \href{http://sols.asu.edu/}{School of Life Sciences}
-    \begin{innerlist}
+    \entry \href{http://sols.asu.edu/}{School of Life Sciences}
+    \begin{cvlist}
         \item Affiliations:
-            \begin{innerlist}
+            \begin{cvlist}
                 \item \href{http://cidse.engineering.asu.edu/}{School of Computing, Informatics, and Decision Systems Engineering}
                 \item \href{http://beyond.asu.edu/}{BEYOND Center for Fundamental Concepts in Science}
                 \item \href{http://csdc.asu.edu/}{Center for Social Dynamics and Complexity}
-            \end{innerlist}
+            \end{cvlist}
         \item Laboratories:
-            \begin{innerlist}
+            \begin{cvlist}
                 \item \href{http://www.public.asu.edu/~spratt1}{Stephen C.~Pratt's Collective Behavior Laboratory}
                 \item \href{http://faculty.engineering.asu.edu/acs/}{Autonomous Collective Systems Laboratory} (PI: Spring Berman)
                 \item \href{http://emergence.asu.edu/}{Emergence@ASU} (PI: Paul C. W. Davies, co-PI: Sara I. Walker)
-            \end{innerlist}
-    \end{innerlist}
+            \end{cvlist}
+    \end{cvlist}
 
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Postdoctoral Scholar},
             \href{http://www.asu.edu/}{Arizona State University}
             \hfill {July 2012 to August 2014}
-\begin{innerlist}
+\begin{cvlist}
 
-    \item[{}] \href{http://sols.asu.edu/}{School of Life Sciences}
-    \begin{innerlist}
+    \entry \href{http://sols.asu.edu/}{School of Life Sciences}
+    \begin{cvlist}
         \item Supervisor: \href{http://www.public.asu.edu/~spratt1}{Professor Stephen C.~Pratt}
         \item Decentralized decision making and behavioral bio-mimicry
             of social insects
-    \end{innerlist}
+    \end{cvlist}
 
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Postdoctoral Researcher},
             \href{http://www.osu.edu/}{The Ohio State University}
             \hfill {September 2010 to June 2012}
-\begin{innerlist}
+\begin{cvlist}
 
-    \item[{}] \href{http://www.cse.ohio-state.edu/}{Department of Computer Science and Engineering}
-    \begin{innerlist}
+    \entry \href{http://www.cse.ohio-state.edu/}{Department of Computer Science and Engineering}
+    \begin{cvlist}
         \item \href{http://www.nfs.gov/}{NSF} ECCS-\href{http://www.nsf.gov/awardsearch/showAward?AWD_ID=0931669}{0931669}:
                 ``Autonomous Driving in Mixed-Traffic Urban Environments''
-        \begin{innerlist}
-            \item[\mathalt{dash}{$-$}] Supervisor (co-PI):
+        \begin{cvlist}
+            \marker{dash}{$-$} Supervisor (co-PI):
                 \href{http://www.cse.ohio-state.edu/~paolo/}%
                      {Professor Paolo A.~G.~Sivilotti}
-            \item[\mathalt{dash}{$-$}] PI:
+            \marker{dash}{$-$} PI:
                 \href{http://www.ece.ohio-state.edu/~umit/}%
                      {Professor \"{U}mit \"{O}zg\"{u}ner}
-        \end{innerlist}
-    \end{innerlist}
+        \end{cvlist}
+    \end{cvlist}
 
-\end{innerlist}
+\end{cvlist}
 
 \section{Education}
 
 \href{http://www.osu.edu/}{\textbf{The Ohio State University}},
 Columbus, OH
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] Ph.D.,
+\entry Ph.D.,
         \href{http://www.ece.osu.edu/}
              {Electrical and Computer Engineering},
              August 2010
-        \begin{innerlist}
+        \begin{cvlist}
         \item Thesis Topic: \emph{Design and Analysis of Optimal
             Task-Processing Agents}
         %\item Thesis Proposal: \emph{Cooperative Task Processing}
@@ -799,31 +802,31 @@ Columbus, OH
               \href{http://www.ece.osu.edu/~passino/}
                    {Professor Kevin M.~Passino}
         \item Area of Study: Control Engineering
-        \end{innerlist}
+        \end{cvlist}
 
-\item[{}] M.S.,
+\entry M.S.,
         \href{http://www.ece.osu.edu/}
              {Electrical and Computer Engineering}, August 2007
-        \begin{innerlist}
+        \begin{cvlist}
         \item Thesis Topic: \emph{Optimal Foraging Theory Revisited}
         \item Adviser:
               \href{http://www.ece.osu.edu/~passino/}
                    {Professor Kevin M.~Passino}
         \item Area of Study: Control Engineering
-        \end{innerlist}
+        \end{cvlist}
 
-\item[{}] B.S.,
+\entry B.S.,
         \href{http://www.ece.osu.edu/}
              {Electrical and Computer Engineering}, June 2004
-        \begin{innerlist}
+        \begin{cvlist}
         \item \emph{Magna cum Laude}, With Honors in Engineering
         \item Electrical specialization (emphasis on electromagnetics and digital computers)
         \item Minor in \href{http://www.cse.ohio-state.edu/}
                             {Computer and Information Systems}
               (programming and algorithms)
-        \end{innerlist}
+        \end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 % \section{Submitted Journal Publications}
 %
@@ -1603,7 +1606,7 @@ included here.}
 %\section{Academic Service}
 %
 %\textbf{Arizona State University, Tempe, AZ}
-%\begin{lonelist}
+%\begin{cvlist}[loose]
 %
 %    \item College of Liberal Arts and Sciences Research Operations Committee,
 %        \emph{Center for Social Dynamics and Complexity Representative},
@@ -1630,13 +1633,13 @@ included here.}
 %        \emph{Founding faculty co\-/adviser}.
 %        2013.
 %
-%\end{lonelist}
+%\end{cvlist}
 
 \section{Advising and Mentoring}
 
 \textbf{Postdoctoral Scholars}
 
-\begin{outerlist}
+\begin{cvlist}[loose]
 
     \item \textbf{Dr.~Kaitlin Baudier}, 2017--2020\\
         Co-advised by: Stephen C.~Pratt and Jennifer H.~Fewell
@@ -1644,13 +1647,13 @@ included here.}
     \item \textbf{Dr.~Gabrielle Valentini}, 2016--2020\\
         Co-advised by: Stephen C.~Pratt and Sara Imari Walker
 
-\end{outerlist}
+\end{cvlist}
 
 \blankline
 
 \textbf{Graduate Students}
 
-\begin{outerlist}
+\begin{cvlist}[loose]
 %    \item \textbf{Brian Vincent}, PhD Student, Computer Science, 2017--\\
 %        Co-advised by: Huan Liu
 
@@ -1673,13 +1676,13 @@ included here.}
     \item \textbf{Sehyeok Kang}, MS Student, Computer Engineering, 2019--2020 (graduated, MS)
 
     \item \textbf{Christian Seto}, MS Student, Industrial Engineering, 2017--2018 (graduated, MS)
-\end{outerlist}
+\end{cvlist}
 
 \blankline
 
 \textbf{Undergraduate Honors Theses}
 
-\begin{outerlist}
+\begin{cvlist}[loose]
     \item \textbf{Liliaokeawawa Cothren}, 2020--2021, Applied Mathematics, honors thesis (director)\\
         Thesis topic: Mathematical investigation of the adaptive value of marginal-value heuristic in a model forager
 
@@ -1720,13 +1723,13 @@ included here.}
         Thesis topic: Modeling and analysis of quorum detection during
         emigration behavior in \emph{Temnothorax rugatulus} ants
 
-\end{outerlist}
+\end{cvlist}
 
 \blankline
 
 \textbf{Undergraduate Research}
 
-\begin{outerlist}
+\begin{cvlist}[loose]
 
 %    \item \textbf{Alyssa Adams}\\
 %        Graduate student in Physics, Arizona State University.
@@ -1812,16 +1815,16 @@ included here.}
 %        Primary adviser: \"{U}mit \"{O}zg\"{u}ner.
 %        2011--2012.
 
-\end{outerlist}
+\end{cvlist}
 
 \section{Teaching Experience}
 
 \href{http://www.asu.edu/}{\textbf{Arizona State University}},
 Tempe, AZ
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] \textit{Instructor} \hfill \textbf{Fall 2015 to present}
-    \begin{innerlist}
+\entry \textit{Instructor} \hfill \textbf{Fall 2015 to present}
+    \begin{cvlist}
         \item SOS 212 (Systems, Dynamics, and Sustainability)
         \item SOS 325 (Economics of Sustainability)
         \item IEE 475 (Simulating Stochastic Systems)
@@ -1832,58 +1835,58 @@ Tempe, AZ
             (Noise and Function: Random Algorithms in Animal Behavior)
         \item IEE/CSE 598
             (Bio-Inspired AI and Optimization)
-    \end{innerlist}
+    \end{cvlist}
 
-\item[{}] \textit{Guest Lecturer} \hfill \textbf{April 2015}
-    \begin{innerlist}
+\entry \textit{Guest Lecturer} \hfill \textbf{April 2015}
+    \begin{cvlist}
         \item ASM~394: Great Adaptations: Origins of Complexity in Nature
-        \begin{innerlist}
+        \begin{cvlist}
             \item Undergraduate course in the science and mathematics of anthropology
             \item Main instructor: Joan B.~Silk
             \item Lecture: ``Connecting Evolutionary Adaptation and the Engineering Design Process''
-        \end{innerlist}
-    \end{innerlist}
+        \end{cvlist}
+    \end{cvlist}
 
-\item[{}] \textit{Guest Lecturer} \hfill \textbf{October 2013}
-    \begin{innerlist}
+\entry \textit{Guest Lecturer} \hfill \textbf{October 2013}
+    \begin{cvlist}
         \item ANB~601: Research Strategies in Animal Behavior
-        \begin{innerlist}
+        \begin{cvlist}
             \item Graduate-level course in animal behavior
             \item Main instructor: Ronald L.~Rutowski
             \item Lecture: ``Mathematical, Computational, and Experimental Modeling: Granularity and Parsimony''
-        \end{innerlist}
-    \end{innerlist}
+        \end{cvlist}
+    \end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.osu.edu/}{\textbf{The Ohio State University}},
 Columbus, OH
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] \textit{Instructor}%
+\entry \textit{Instructor}%
     \hfill \textbf{March~2012 to August~2012}
-    \begin{innerlist}
+    \begin{cvlist}
         \item Instructor for ECE~683: Undergraduate Design Project
             %
-            \begin{innerlist}
+            \begin{cvlist}
                 \item Students designed retrofitable vehicle\-/to\-/vehicle
                     communications system to aid in the development of
                     verifiably safe adaptive cruise control.
                 \item Design project folded into larger research project
                     on autonomous vehicles in mixed\-/traffic urban
                     environments.
-            \end{innerlist}
-    \end{innerlist}
+            \end{cvlist}
+    \end{cvlist}
 
-\item[{}] \textit{Teaching Assistant}%
+\entry \textit{Teaching Assistant}%
     \hfill \textbf{September 2007 to August 2009}\\
     (sample graded material and student evaluations available upon
     request)
-    \begin{innerlist}
+    \begin{cvlist}
         \item Instructor for ECE~327: Electronic Devices and Circuits Laboratory I
-        \begin{innerlist}
+        \begin{cvlist}
             \item Autumn~2007, Winter~(2) and Spring~2008~(2),
                 Winter~(2) and Summer~2009
 
@@ -1896,20 +1899,20 @@ Columbus, OH
             \item Authored hundreds of pages of course material
                 archived at\\
                 \url{http://www.tedpavlic.com/teaching/osu/ece327}.
-        \end{innerlist}
+        \end{cvlist}
 
         \halfblankline
 
         \item Grader for ECE~481 Ethics in Electrical and Computer Engineering
-        \begin{innerlist}
+        \begin{cvlist}
             \item Autumn~2007 and Autumn~2008
-        \end{innerlist}
+        \end{cvlist}
 
         \halfblankline
 
         \item Instructor for ECE~209: Circuits and Electronics
             Laboratory
-        \begin{innerlist}
+        \begin{cvlist}
             \item Autumn~2008
 
             % \item Sample student evaluations available upon request.
@@ -1919,13 +1922,13 @@ Columbus, OH
 
             \item Authored material at
                 \url{http://www.tedpavlic.com/teaching/osu/ece209}.
-        \end{innerlist}
+        \end{cvlist}
 
         \halfblankline
 
         \item Instructor for ECE~557: Control, Signals, and Systems
             Laboratory
-        \begin{innerlist}
+        \begin{cvlist}
             \item Summer~2008~(2~sections) and Summer~2009
 
             % \item Sample student evaluations available upon request.
@@ -1938,13 +1941,13 @@ Columbus, OH
 
             \item Authored material at
                 \url{http://www.tedpavlic.com/teaching/osu/ece557}.
-        \end{innerlist}
+        \end{cvlist}
 
         \halfblankline
 
         \item Lab Instructor for ECE~758: Control Systems Implementation
             Laboratory
-        \begin{innerlist}
+        \begin{cvlist}
             \item Spring~2009~(2~sections)
 
             % \item Sample student evaluations available upon request
@@ -1958,21 +1961,21 @@ Columbus, OH
 
             \item Authored material at
                 \url{http://www.tedpavlic.com/teaching/osu/ece758}.
-        \end{innerlist}
-    \end{innerlist}
+        \end{cvlist}
+    \end{cvlist}
 
-\item[{}] \href{http://www.nsfgk12.org/}
+\entry \href{http://www.nsfgk12.org/}
         {\emph{National Science Foundation GK\-/12 Graduate Fellow}}
         \hfill \textbf{September 2006 to October 2007}
-\begin{innerlist}
-    \item[{}] Developed, implemented, and evaluated daily inquiry\-/based
+\begin{cvlist}
+    \entry Developed, implemented, and evaluated daily inquiry\-/based
         fourth\-/grade science lessons for a local inner\-/city public
         school class.
-\end{innerlist}
+\end{cvlist}
 
-\item[{}] \textit{Instructor}%
+\entry \textit{Instructor}%
         \hfill \textbf{March 2002 to June 2004}
-\begin{innerlist}
+\begin{cvlist}
 \item Member of \href{http://feh.eng.ohio-state.edu/}
                      {Fundamentals of Engineering for Honors}
       instructional team.
@@ -1982,11 +1985,11 @@ Columbus, OH
 \item Trained in\-/class undergraduate teaching assistants in laboratory
         procedure.
 \item Graded weekly lab reports and provided laboratory exams.
-\end{innerlist}
+\end{cvlist}
 
-\item[{}] \textit{Teaching Assistant}%
+\entry \textit{Teaching Assistant}%
         \hfill \textbf{September 2000 to March 2002}
-\begin{innerlist}
+\begin{cvlist}
 \item Assisted \href{http://feh.eng.ohio-state.edu/}
                     {Fundamentals of Engineering for Honors}
       instructional team.
@@ -1995,11 +1998,11 @@ Columbus, OH
 \item Graded daily assignments on programming and drafting.
 \item Developed on\-/line journal system for Physics Education Research
       Group~(PERG).
-\end{innerlist}
+\end{cvlist}
 
-\item[{}] \textit{Undergraduate Researcher}%
+\entry \textit{Undergraduate Researcher}%
         \hfill \textbf{September 2000 to March 2002}
-\begin{innerlist}
+\begin{cvlist}
 \item Participated in the
         \href{http://www.cse.ohio-state.edu/europa/}{Europa
         Undergraduate Research Forum}, a part of the
@@ -2009,26 +2012,26 @@ Columbus, OH
         pedagogy.
 \item Researched changes to RESOLVE/C++ implementation for ANSI
         compliance.
-\end{innerlist}
+\end{cvlist}
 
-\item[{}] \textit{Grader}%
+\entry \textit{Grader}%
         \hfill \textbf{September 2001 to December 2001}
-\begin{innerlist}
+\begin{cvlist}
 \item Graded daily electromagnetics assignments (ECE~311).
-\end{innerlist}
-\end{outerlist}
+\end{cvlist}
+\end{cvlist}
 
 \section{Professional Service}
 
 \textbf{Committee Service}
-\begin{innerlist}
+\begin{cvlist}
     \item Officer, IEEE Special Technical Community for Human Computation
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Referee Service}
-\begin{innerlist}
+\begin{cvlist}
     \item \emph{IEEE Conference on Decision and Control~(CDC)}
     \item \emph{International Journal of Control}
     \item \emph{ASME Journal of Dynamic Systems, Measurement, and Control}
@@ -2060,16 +2063,16 @@ Columbus, OH
     \item \emph{Current Zoology}
     \item \emph{Journal of Theoretical Biology}
     \item \emph{International Journal of the Commons}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Editorial Service (journals only)}
-\begin{innerlist}
+\begin{cvlist}
     \item \emph{PLOS Computational Biology}, guest associate editor (2020)
     \item \emph{Human Computation}, editorial board (2014--)
     \item \emph{Frontiers in Robotics and AI, Computational Intelligence}, review editorial board (2014--)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2132,30 +2135,30 @@ Columbus, OH
 
 \href{http://www.asu.edu/}{\textbf{Arizona State University}},
 Tempe, AZ
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-    \item[{}] \textit{Assistant Professor}%
+    \entry \textit{Assistant Professor}%
             \hfill \textbf{August 2015}
-            \begin{innerlist}
+            \begin{cvlist}
                 \item Joint Appointment:
-                    \begin{innerlist}
+                    \begin{cvlist}
                         \item School of Computing and Augmented Intelligence
                         \item School of Sustainability
                         \item School of Complex Adaptive Systems
-                    \end{innerlist}
+                    \end{cvlist}
 
                 %\item Graduate faculty in Industrial Engineering/Operations
                 %    Research, Sustainability, and Animal Behavior.
 
                 \item Interdisciplinary laboratory focused on decision
                     making and organization.
-            \end{innerlist}
+            \end{cvlist}
 
-    \item[{}] \textit{Associate Research Scientist}%
+    \entry \textit{Associate Research Scientist}%
             \hfill \textbf{August 2014 to July 2015}\\
         \textit{Postdoctoral Scholar}%
             \hfill \textbf{July 2012 to August 2014}
-            \begin{innerlist}
+            \begin{cvlist}
                 \item Supervisor:
                         \href{http://www.public.asu.edu/~spratt1/}%
                              {Professor Stephen C.~Pratt}
@@ -2172,30 +2175,30 @@ Tempe, AZ
                     in engineering, computer science, and biology in
                     tasks related to biological analysis and modeling as
                     well as technological bio\-/mimetic design.
-            \end{innerlist}
+            \end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.osu.edu/}{\textbf{The Ohio State University}},
 Columbus, OH
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-    \item[{}] \textit{Postdoctoral Researcher}%
+    \entry \textit{Postdoctoral Researcher}%
             \hfill \textbf{September 2010 to June 2012}
-            \begin{innerlist}
+            \begin{cvlist}
                 \item Funding:~\href{http://www.nfs.gov/}{National Science Foundation} Cyber\-/Physical Systems (ENG, \href{http://www.nsf.gov/div/index.jsp?div=eccs}{ECCS})
-                \begin{innerlist}
-                    \item[\mathalt{dash}{$-$}] ``Autonomous Driving in Mixed\-/Traffic Urban Environments''
+                \begin{cvlist}
+                    \marker{dash}{$-$} ``Autonomous Driving in Mixed\-/Traffic Urban Environments''
                         (grant~\href{http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0931669}{\#0931669})
-                    \item[\mathalt{dash}{$-$}] Supervisor (co\-/PI):
+                    \marker{dash}{$-$} Supervisor (co\-/PI):
                         \href{http://www.cse.ohio-state.edu/~paolo/}%
                              {Professor Paolo A.~G.~Sivilotti}
-                    \item[\mathalt{dash}{$-$}] PI:
+                    \marker{dash}{$-$} PI:
                         \href{http://www.ece.ohio-state.edu/~umit/}%
                              {Professor \"{U}mit \"{O}zg\"{u}ner}
-                \end{innerlist}
+                \end{cvlist}
 
                 \item Development of new approaches to software
                     verification in the context of hybrid\-/state and
@@ -2204,63 +2207,63 @@ Columbus, OH
                 \item Supervision of student design project for
                     novel vehicle\-/to\-/vehicle communications
                     systems to assist in adaptive cruise control.
-            \end{innerlist}
+            \end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.ni.com/}{\textbf{National Instruments}},
 Austin, TX
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] \textit{Hardware R\&D Intern for Multifunction DAQ}%
+\entry \textit{Hardware R\&D Intern for Multifunction DAQ}%
         \hfill \textbf{June 2003 to September 2003}
-\begin{innerlist}
+\begin{cvlist}
 \item Designed final verification test fixture for use with STC2 MIO
         products.
 \item Designed and executed study of the effect of varying burn\-/in time
         on long\-/term drift of common industry voltage references.
-\end{innerlist}
+\end{cvlist}
 
-\item[{}] \textit{Hardware R\&D Intern for Multifunction DAQ}%
+\entry \textit{Hardware R\&D Intern for Multifunction DAQ}%
         \hfill \textbf{June 2002 to September 2002}
-\begin{innerlist}
+\begin{cvlist}
 \item Designed and performed validation tests for 16-bit 800 kHz
         NI-6120 SMIO DAQ.
 
 \item Designed high\-/quality source to use with NI-5411 arbitrary
         function generator.
-\end{innerlist}
+\end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{\href{http://www.ibm.com/}{IBM} Network Storage},
 Research Triangle Park, NC
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] \textit{Core Systems Software Developer for FlexNAS}%
+\entry \textit{Core Systems Software Developer for FlexNAS}%
         \hfill \textbf{June 2001 to September 2001}
-\begin{innerlist}
+\begin{cvlist}
 \item Designed and implemented highly available multihop communications
         subsystem.
 \item Participated in software development of various vital box
         services.
-\end{innerlist}
+\end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.calltech.com/}{\textbf{CallTech Communications}},
 Columbus, OH
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] \textit{Information Technology Systems Engineer}%
+\entry \textit{Information Technology Systems Engineer}%
         \hfill \textbf{June 1997 to May 2001}
-\begin{innerlist}
+\begin{cvlist}
 \item Responsible for the acquisition, setup, and administration of all
         hardware and software systems supporting
         \href{http://www.netwalk.com/}{NetWalk} Internet service and web
@@ -2270,33 +2273,33 @@ Columbus, OH
         virtual servers.
 \item Developed call\-/center software for clients such as
         CompuServe, AOL, and Priceline.
-\end{innerlist}
+\end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{MegaLinx Communications}, Dublin, OH
-\begin{outerlist}
+\begin{cvlist}[loose]
 
-\item[{}] \textit{Web Developer and Support Representative}%
+\entry \textit{Web Developer and Support Representative}%
         \hfill \textbf{June 1995 to May 1997}
-\begin{innerlist}
+\begin{cvlist}
 \item Produced web content for commercial clients.
 \item Assisted in administration of UltraSPARC, x86, 680x0, and PowerPC
         systems.
 \item Developed multi\-/platform open\-/source file\-/sharing solution.
 \item Provided technical support for Internet and web presence
         customers.
-\end{innerlist}
+\end{cvlist}
 
-\end{outerlist}
+\end{cvlist}
 
 \section{Professional Memberships}
 
 Institute for Operations Research and the Management Sciences~(INFORMS), Member, 2015--present
 %
-\begin{innerlist}
+\begin{cvlist}
 \item Applied Probability Society~(2015--present)
 \item Artificial Intelligence Section~(2015--present)
 \item Behavioral Operations Management~(2015--present)
@@ -2307,23 +2310,23 @@ Institute for Operations Research and the Management Sciences~(INFORMS), Member,
 \item Organization Science Section~(2015--present)
 \item Simulation Society~(2015--present)
 \item Transportation Science and Logistics Society~(2015--present)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Institute for Industrial Engineers~(IIE), Member, 2015--present
 %
-\begin{innerlist}
+\begin{cvlist}
 \item Operations Research division~(2015--present)
 \item Sustainable Development division~(2015--present)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Institute for Electrical and Electronics Engineers~(IEEE), Member,
 2002--present
 %
-\begin{innerlist}
+\begin{cvlist}
 \item IEEE Control Systems Society (2004--present)
 \item IEEE Communications Society (2012--present)
 \item IEEE Computer Society (2009--present)
@@ -2333,7 +2336,7 @@ Institute for Electrical and Electronics Engineers~(IEEE), Member,
 \item IEEE Computational Intelligence Society (2013--present)
 \item IEEE Circuits and Systems Society (2013--present)
 \item IEEE Information Theory Society (2013--present)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2346,17 +2349,17 @@ Animal Behavior Society~(ABS), Member, 2011--present
 \halfblankline
 
 International Union for the Study of Social Insects~(IUSSI), Member, 2012--present
-\begin{innerlist}
+\begin{cvlist}
 \item North American Section (2012--present)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Entomological Society of America, Member, 2014--present
-\begin{innerlist}
+\begin{cvlist}
 \item Southwestern and Pacific Branch (2014--present)
 \item Systematics, Evolution, and Biodiversity Section (2014--present)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2369,7 +2372,7 @@ Society for Industrial and Applied Mathematics~(SIAM), Member, 2015--present
 \section{Other Meeting Attendance}
 
 \textbf{Invited Participant}
-\begin{innerlist}
+\begin{cvlist}
     \item 12th Annual National Academies Keck Futures Initiative
         Conference~(NAKFI 2014) on Collective Behavior: From Cells to
         Societies, November 13--15, 2014
@@ -2377,29 +2380,29 @@ Society for Industrial and Applied Mathematics~(SIAM), Member, 2015--present
         Summit Workshop, June 18--20, 2014
     \item BEYOND Center for Fundamental Concepts in Science Workshop:
         Complex Systems Theory and Cancer Biology, February 22--23, 2014
-\end{innerlist}
+\end{cvlist}
 
 \textbf{General Participant}
-\begin{innerlist}
+\begin{cvlist}
     \item NSF Workshop on Self-organizing Particle Systems, January 8, 2014
     \item 1\textsuperscript{st} IEEE/ACM Workshop on Signal Processing Advances in Sensor Networks, April~8, 2013
     \item CoMSES Workshop on ABM in Education, February 28~-- March~2, 2013
     \item 49\textsuperscript{th} IEEE Conference on Decision and Control, December 15--17, 2010
-\end{innerlist}
+\end{cvlist}
 
 \section{Service}
 
 Arizona State University School of Life Sciences Graduate Retreat 2014
-\begin{innerlist}
+\begin{cvlist}
     \item Panelist, ``Securing a post-doc'' session
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Intel International Science and Engineering Fair (ISEF) 2013
-\begin{innerlist}
+\begin{cvlist}
     \item Grand Award Judge for Animal Sciences
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2407,15 +2410,15 @@ Intel International Science and Engineering Fair (ISEF) 2013
 \href{http://www.asu.edu}{Arizona State University},
 2013
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Staffed the ``Ants of Arizona'' exhibit
     \item Answered questions about ants and research related to them
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Recent contributor to several open\-/source software projects, including:
-\begin{innerlist}
+\begin{cvlist}
     \item \href{http://vim-latex.sourceforge.net/}{Vim\-/LaTeX} suite
     \item \href{http://vimperator.org}{Vimperator} and
         \href{http://dactyl.sourceforge.net/pentadactyl/index}{Pentadactyl}
@@ -2426,31 +2429,31 @@ Recent contributor to several open\-/source software projects, including:
         system
     \item Personal projects archived at
         \url{http://hg.tedpavlic.com/}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Frequent contributor to \href{http://www.wikipedia.org/}{Wikipedia}
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Significant contributions to articles on control theory,
         electronics, and signals and systems.
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Contributor to \href{http://www.quora.com/}{Quora}
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Contributions to articles on thermodynamics, chaos theory,
         electronics, and evolutionary biology.
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.osufirst.org/}{OSU FIRST Robotics Team},
 \href{http://www.osu.edu}{The Ohio State University}, 2000--2004
-\begin{innerlist}
+\begin{cvlist}
 \item Introduced middle school and high school students to science and
         technology by participating with them in national robotics
         competitions.
@@ -2459,16 +2462,16 @@ Contributor to \href{http://www.quora.com/}{Quora}
              {\emph{Engineering Inspiration Award}}.
 \item \emph{Lead Team Mentor}, 2002--2004
 \item \emph{Component Design Team Lead Mentor}, 2001--2002
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Ohio Science Olympiad state competition, Robot Ramble Event, 2003
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Supervised setup and judging of event for middle-school and
         high-school students
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2480,30 +2483,30 @@ Director of Computers,
 
 \href{http://www.linuxvirtualserver.org/}
      {Linux Virtual Server Project}, 1999--2000
-\begin{innerlist}
+\begin{cvlist}
 \item Early member of the team that formed the open\-/source project that
         is now an important load balancing solution for the Linux
         software platform.
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.gcfn.org/}
      {Greater Columbus Free\-/Net}, 1995--1997
-\begin{innerlist}
+\begin{cvlist}
 \item Provided technical support services.
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 CompuTeen Bulletin Board System, 1993--1995
-\begin{innerlist}
+\begin{cvlist}
 \item Administrated dial\-/up bulletin board system.
 \item Founded and administrated TeenLiNK, an international electronic
         mail network that spread through the United States, Canada, and
         Australia and delivered mail over a series of electronic dial\-/up
         drop offs.
-\end{innerlist}
+\end{cvlist}
 
 \section{Application Areas}
 
@@ -2515,28 +2518,28 @@ Response, Microgrids, Smart Grids
 
 Analog and Digital Electronics:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Bipolar and FET implementations of continuous and switched
         amplifiers, modulators, converters, and filters
 
     \item Computer\-/Aided Design Tools: Cadence OrCAD, NI Multisim, SPICE, pst\-/circ
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Embedded and Real\-/time Systems:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Software and hardware development with several MCU and
         DSP platforms (e.g., Motorola MCU's, Texas Instruments DSP's, Atmel
         ATmega MCU's, Microchip PIC MCU's, and others)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Instrumentation, Control, Data Acquisition, Test, and Measurement:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item \href{http://www.dspaceinc.com/}{dSPACE} hardware (e.g.,
         RTI1104) and Control Desk software,
         \href{http://www.mathworks.com/products/simulink/}{Simulink},
@@ -2545,40 +2548,40 @@ Instrumentation, Control, Data Acquisition, Test, and Measurement:
         control and data acquisition hardware and software (e.g., MIO,
         SMIO, DSA, DMM, and others), Hewlett\-/Packard and Agilent
         bench\-/top equipment
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Computer Programming:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item C, C\mathalt{plus}{$+$}\mathalt{plus}{$+$}, Java, JavaScript, NetLogo, Pascal, Perl, PHP,
         Lisp, UNIX shell scripting (including POSIX.2), GNU make,
         AppleScript, SQL, MySQL, and others
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Numerical Analysis:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item \Matlab, R, Maple, Mathematica
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Version Control and Software Configuration Management:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item DVCS (Mercurial/MQ, Git/StGit), VCS (RCS, CVS, SVN, SCCS), and
         others
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.mathworks.com/products/matlab/}{\Matlab} skill set:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Linear algebra, Fourier transforms, Monte Carlo analysis,
         nonlinear numerical methods, polynomials, statistics,
         \mathalt{N}{$N$}-dimensional filters, visualization
@@ -2586,109 +2589,109 @@ Version Control and Software Configuration Management:
     \item Toolboxes: communications, control system, filter design,
         genetic algorithm and direct search, signal processing, system
         identification
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Software Verification:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item KeY, PRISM, KeYmaera
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Information/Internet Technology:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Networking (UDP, TCP, ARP, DNS, Dynamic
         routing), Services (Apache, SQL, MediaWiki, POP, IMAP, SMTP,
         application\-/specific daemon design)
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Desktop Editing and Productivity Software:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Vim, Emacs, Eclipse
     \item \TeX{} (\LaTeX{}, \BibTeX{}, PSTricks),
     \item Microsoft Office, OpenOffice.org, LibreOffice, Corel
         WordPerfect, Google Docs
     \item GIMP, InkScape
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Operating Systems:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Microsoft Windows family, Apple OS X, IBM OS/2, Linux, BSD,
         IRIX, AIX, Solaris, and other UNIX variants
-\end{innerlist}
+\end{cvlist}
 
 \section{Expertise}
 
 Mathematics:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Applied Mathematics, Real and Complex Analysis, Measure
         Theory, Differential Geometry, Game Theory, Graph Theory,
         Combinatorics
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Control Theory and Engineering:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Linear and Nonlinear Systems Theory, Feedback, Variable
         Structure Systems and Sliding Modes, Distributed and Intelligent
         Control, Dynamic Optimization, Biomimicry, Bioinspiration,
         Hybrid and CyberPhysical Systems
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Communications and Signal Processing:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Probability, Random Variables, Stochastic Processes,
         Information Theory, Estimation, Networks
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Computer Science and Engineering:
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Model Checking (automated, distributed, hybrid,
         probabilistic), Hybrid Automata, Software Verification,
         Component\-/Based Reusable Software
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 Natural and Social Sciences (Biology, Neuroscience, Psychology, Anthropology):
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Behavioral Ecology, Foraging Theory, Altruism, Impulsiveness,
         Evolution
-\end{innerlist}
+\end{cvlist}
 
 \section{Awards}
 
 \href{http://www.nsf.gov/}{National Science Foundation}
-\begin{innerlist}
+\begin{cvlist}
 \item \href{http://www.nsfgk12.org/}{GK\-/12 Graduate Fellowship}, 2006--2007
 \item \href{http://www.nsf.gov/grfp}
            {Graduate Research Fellowship} Honorable Mention, 2005
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \href{http://www.osu.edu}{The Ohio State University}
-\begin{innerlist}
+\begin{cvlist}
 \item \href{http://www.gradsch.osu.edu/graduate-school-fellowships-for-first-year-graduate-students.html}
            {Dean's Distinguished University (DDU) Graduate Fellowship}, 2004--2010
 \item Electrical and Computer Engineering Bradshaw Scholarship,
@@ -2696,7 +2699,7 @@ Natural and Social Sciences (Biology, Neuroscience, Psychology, Anthropology):
 \item Electrical and Computer Engineering Shafstall Scholarship,
         2001--2003
 \item University Scholarship, 1999--2003
-\end{innerlist}
+\end{cvlist}
 
 \section{Popular Media}
 
@@ -2737,33 +2740,33 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {\textbf{Dr.~Stephen C.~Pratt}}
 (e\-/mail:~\href{mailto:stephen.pratt@asu.edu}{stephen.pratt@asu.edu}; phone:~+1-480-727-9425)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Associate Professor,
         \href{http://sols.asu.edu/}{School of Life Sciences},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] School of Life Sciences, PO Box 874501, Tempe, AZ
+    \marker{diamond}{$\diamond$} School of Life Sciences, PO Box 874501, Tempe, AZ
         85287-4501
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Pratt is my current postdoctoral supervisor.}
-\end{innerlist}
+    \marker{star}{$\star$} \emph{Dr.~Pratt is my current postdoctoral supervisor.}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Dr.~Spring M.~Berman}
 (e\-/mail:~\href{mailto:Spring.Berman@asu.edu}{Spring.Berman@asu.edu}; phone:~+1-480-965-4431)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Assistant Professor,
         \href{http://sols.asu.edu/}{Mechanical and Aerospace Engineering},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] School for Engineering of Matter, Transport, and
+    \marker{diamond}{$\diamond$} School for Engineering of Matter, Transport, and
         Energy, PO Box 876106, Tempe, AZ
         85287-6106
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Berman is collaborator on my bio\-/mimicry work.}
-\end{innerlist}
+    \marker{star}{$\star$} \emph{Dr.~Berman is collaborator on my bio\-/mimicry work.}
+\end{cvlist}
 
 \halfblankline
 
@@ -2772,18 +2775,18 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {\textbf{Dr.~Paul C.~W.~Davies}}
 (e\-/mail:~\href{mailto:Paul.Davies@asu.edu}{Paul.Davies@asu.edu}; phone:~+1-480-965-3240)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Regents Professor and Director,
         \href{http://beyond.asu.edu/}{Beyond Center for Fundamental Concepts in Science},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] Beyond Center for Fundamental Concepts in Science,
+    \marker{diamond}{$\diamond$} Beyond Center for Fundamental Concepts in Science,
         P.O. Box 871504, Tempe, AZ
         85287-1504
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Davies is collaborator on my
+    \marker{star}{$\star$} \emph{Dr.~Davies is collaborator on my
         origins\-/of\-/life work.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2792,31 +2795,31 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {\textbf{Dr.~Sara Imari Walker}}
 (e\-/mail:~\href{mailto:sara.i.walker@asu.edu}{sara.i.walker@asu.edu}; phone:~+1-480-727-2394)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Assistant Professor,
         \href{http://sese.asu.edu/}{School of Earth and Space Exploration},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] ASU School of Earth and Space Exploration,
+    \marker{diamond}{$\diamond$} ASU School of Earth and Space Exploration,
         PO Box 871404, Tempe, AZ
         85287-1404
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Walker is collaborator on my
+    \marker{star}{$\star$} \emph{Dr.~Walker is collaborator on my
         origins\-/of\-/life work.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Dr.~Pietro Michelucci}
 (e\-/mail:~\href{mailto:pem@thinksplash.com}{pem@thinksplash.com}; phone: +1-571-235-3288)
-\begin{innerlist}
+\begin{cvlist}
     \item Principal,
         ThinkSplash LLC, Washington, DC
 
-    \item[\mathalt{star}{$\star$}] \emph{I co\-/authored a chapter in the \emph{Handbook
+    \marker{star}{$\star$} \emph{I co\-/authored a chapter in the \emph{Handbook
         of Human Computation}, for which Dr.~Michelucci was the
         editor\-/in\-/chief.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2824,17 +2827,17 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {http://www.cse.ohio-state.edu/~paolo/}
 {\textbf{Dr.~Paolo A.~G.~Sivilotti}}
 (e\-/mail:~\href{mailto:sivilotti.1@osu.edu}{sivilotti.1@osu.edu}; phone: +1-614-292-5835)
-\begin{innerlist}
+\begin{cvlist}
     \item Associate Professor,
         \href{http://www.cse.ohio-state.edu/}{Computer Science and Engineering},
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \marker{diamond}{$\diamond$} 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Sivilotti is my past postdoctoral
+    \marker{star}{$\star$} \emph{Dr.~Sivilotti is my past postdoctoral
         supervisor.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2842,18 +2845,18 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {http://www.cse.ohio-state.edu/~weide/}
 {\textbf{Dr.~Bruce W.~Weide}}
 (e\-/mail:~\href{mailto:weide.1@osu.edu}{weide.1@osu.edu}; phone:~+1-614-292-1517)
-\begin{innerlist}
+\begin{cvlist}
     \item Professor and Associate Chair,
         \href{http://www.cse.ohio-state.edu/}{Computer Science and
         Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \marker{diamond}{$\diamond$} 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Weide is a co\-/PI on the NSF grant that
+    \marker{star}{$\star$} \emph{Dr.~Weide is a co\-/PI on the NSF grant that
         funded my previous postdoctoral position.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2862,19 +2865,19 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {\textbf{Dr.~Ian M.~Hamilton}}
 (e\-/mail:~\href{mailto:hamilton.598@osu.edu}{hamilton.598@osu.edu}; phone:~+1-614-292-9147)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Assistant Professor,
         \href{http://eeob.osu.edu/}{Evolution, Ecology, and Organismal Biology}
         and
         \href{http://www.math.ohio-state.edu/}{Mathematics}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] 300 Aronoff Laboratory, 318 W.~12th Avenue,
+    \marker{diamond}{$\diamond$} 300 Aronoff Laboratory, 318 W.~12th Avenue,
         Columbus, OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Hamilton has been a valuable
+    \marker{star}{$\star$} \emph{Dr.~Hamilton has been a valuable
         interdisciplinary resource to me.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2883,17 +2886,17 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {\textbf{Dr.~Kevin M.~Passino}}
 (e\-/mail:~\href{mailto:passino.1@osu.edu}{passino.1@osu.edu}; phone:~+1-614-312-2472)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Professor,
         \href{http://www.ece.osu.edu/}{Electrical and Computer
         Engineering},
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \marker{diamond}{$\diamond$} 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Passino was my graduate adviser.}
-\end{innerlist}
+    \marker{star}{$\star$} \emph{Dr.~Passino was my graduate adviser.}
+\end{cvlist}
 
 \halfblankline
 
@@ -2902,17 +2905,17 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {\textbf{Dr.~Andrea Serrani}}
 (e\-/mail:~\href{mailto:serrani.1@osu.edu}{serrani.1@osu.edu}; phone:~+1-614-292-4976)
 %
-\begin{innerlist}
+\begin{cvlist}
     \item Associate Professor,
         \href{http://www.ece.osu.edu/}{Electrical and Computer Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \marker{diamond}{$\diamond$} 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Serrani was a member of my doctoral
+    \marker{star}{$\star$} \emph{Dr.~Serrani was a member of my doctoral
         committee.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2920,17 +2923,17 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {http://feh.osu.edu/staff/view.html?UID=798}
 {\textbf{Dr.~Richard J.~Freuler}}
 (e\-/mail:~\href{mailto:freuler.1@osu.edu}{freuler.1@osu.edu}; phone: +1-614-688-0499)
-\begin{innerlist}
+\begin{cvlist}
     \item Professor of Practice,
         \href{http://mae.osu.edu/}{Mechanical and Aerospace Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] 244 Hitchcock Hall, 2070 Neil Ave., Columbus, OH  43210
+    \marker{diamond}{$\diamond$} 244 Hitchcock Hall, 2070 Neil Ave., Columbus, OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Freuler coordinates the Fundamentals of
+    \marker{star}{$\star$} \emph{Dr.~Freuler coordinates the Fundamentals of
         Engineering for Honors program in which I served as an
         instructor early in my academic career.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
@@ -2938,30 +2941,30 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
 {http://mae.osu.edu/people/staab.1}
 {\textbf{Dr.~George H.~Staab}}
 (e\-/mail:~\href{mailto:staab.1@osu.edu}{staab.1@osu.edu}; phone: +1-614-292-7920)
-\begin{innerlist}
+\begin{cvlist}
     \item Associate Professor,
         \href{http://mae.osu.edu/}{Mechanical and Aerospace Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[\mathalt{diamond}{$\diamond$}] W192 Scott Laboratory, 201 W.~19th Ave., Columbus, OH  43210
+    \marker{diamond}{$\diamond$} W192 Scott Laboratory, 201 W.~19th Ave., Columbus, OH  43210
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Staab is the faculty adviser for the OSU
+    \marker{star}{$\star$} \emph{Dr.~Staab is the faculty adviser for the OSU
         FIRST robotics and engineering outreach group of which I was a
         four\-/year member and team leader.}
-\end{innerlist}
+\end{cvlist}
 
 \halfblankline
 
 \textbf{Dr.~Clayton Daigle}
 (e\-/mail:~\href{mailto:Clayton.Daigle@silabs.com}{Clayton.Daigle@silabs.com}; phone: +1-512-532-5935)
-\begin{innerlist}
+\begin{cvlist}
     \item Mixed-Signal Engineer,
         \href{http://www.silabs.com/}{Silicon Laboratories}, Austin, TX
 
-    \item[\mathalt{star}{$\star$}] \emph{Dr.~Daigle was my direct supervisor when I
+    \marker{star}{$\star$} \emph{Dr.~Daigle was my direct supervisor when I
         worked for National Instruments as an analog hardware R\&D
         engineer.}
-\end{innerlist}
+\end{cvlist}
 
 % The ``More Info'' section may not be necessary; make sure it's short
 % so it doesn't prevent people from seeing references available to
