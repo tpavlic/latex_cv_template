@@ -81,9 +81,25 @@ All of the entries in a CV are `cvlist` lists. A list is tight by default, which
 
 ### A Worked Example
 
-This is the pattern the template uses for each entry: a line naming the employer, then a loose list whose items are headings with a right-aligned date, each followed by a tight list of details. The reference list at the end is explained in the next section.
+The contact information is three boxes side by side, with the address on the left and the phone, e-mail, and web address on the right (`\rcollength` and `\spacewidth`, set just above this block in `cv.tex`, are the width of the right box and the gap between the boxes). Each entry after that follows the pattern the template uses: a line naming the employer, then a loose list whose items are headings with a right-aligned date, each followed by a tight list of details. The reference list at the end is explained in the next section.
 
 ```latex
+\makeheading{Your Name}
+
+\section{Contact Information}
+
+\noindent
+\parbox[t]{\textwidth-\rcollength-\spacewidth}{%
+    \href{https://www.example.edu/}{Example University}\\
+    Department of Examples\\
+    123 Main Street\\
+    Anytown, ST 12345  USA}%
+\parbox[t]{\spacewidth}{\mbox{}}%
+\parbox[t]{\rcollength}{%
+    \textit{Phone:} +1-555-555-0100 \\
+    \textit{E-mail:} \email{you@example.edu}\\
+    \textit{WWW:} \href{https://www.example.com/}{www.example.com}}\par
+
 \section{Experience}
 
 \href{https://www.example.edu/}{\textbf{Example University}}, Anytown
@@ -116,15 +132,16 @@ This is the pattern the template uses for each entry: a line naming the employer
 
 It produces this (the footer is left out here):
 
-![Rendered worked example: the name with a rule beneath it, then an Experience section naming Example University, with two entries in italics, Assistant Professor and Postdoctoral Scholar, each with dates in bold at the right margin and bulleted details below, one of them with a dash sub-item, followed by a Publications section with one numbered reference.](images/worked-example.png)
+![Rendered worked example: the name with a rule beneath it, a Contact Information section with an address on the left and phone, e-mail, and web address on the right, then an Experience section naming Example University, with two entries in italics, Assistant Professor and Postdoctoral Scholar, each with dates in bold at the right margin and bulleted details below, one of them with a dash sub-item, followed by a Publications section with one numbered reference.](images/worked-example.png)
 
 <!--
 To regenerate the two images in images/ (both made with lualatex):
   cv-page-1.png: build cv.tex, then
     pdftoppm -r 130 -f 1 -l 1 -png cv.pdf p
     magick p-01.png -colors 48 -strip PNG8:images/cv-page-1.png
-  worked-example.png: copy cv.tex, put the example above (with
-    \makeheading{Your Name} before it) after \begin{document}, change
+  worked-example.png: copy cv.tex, put the example above after
+    \begin{document} (keep the \newlength lines for \rcollength and
+    \spacewidth from cv.tex's Contact section before it), change
     \pagestyle{fancy} to \pagestyle{empty}, build, then
     pdftoppm -r 150 -f 1 -l 1 -png cv.pdf e
     magick e-1.png -trim +repage -bordercolor white -border 24 \
