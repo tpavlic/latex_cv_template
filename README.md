@@ -124,9 +124,9 @@ The contact information is three boxes side by side, with the address on the lef
 \section{Publications}
 
 \begin{bibenum}
-    \item Doe, J. and R.~Roe. A title that goes here.
+    \item Doe, J. and R.~Roe. A short title.
         \emph{Journal of Examples}, 1:1--10. 2020.
-        \doi{10.1000/example}
+        \doi{10.1000/xyz}
 \end{bibenum}
 ```
 
@@ -137,16 +137,16 @@ It produces this (the footer is left out here):
 <!--
 To regenerate the two images in images/ (both made with lualatex):
   cv-page-1.png: build cv.tex, then
-    pdftoppm -r 130 -f 1 -l 1 -png cv.pdf p
-    magick p-01.png -trim +repage -bordercolor white -border 24 \
-        -colors 48 -strip PNG8:images/cv-page-1.png
+    pdftoppm -r 220 -f 1 -l 1 -png cv.pdf p
+    magick p-01.png -trim +repage -bordercolor white -border 40 \
+        -colors 64 -strip PNG8:images/cv-page-1.png
   worked-example.png: copy cv.tex, put the example above after
     \begin{document} (keep the \newlength lines for \rcollength and
     \spacewidth from cv.tex's Contact section before it), change
     \pagestyle{fancy} to \pagestyle{empty}, build, then
-    pdftoppm -r 150 -f 1 -l 1 -png cv.pdf e
-    magick e-1.png -trim +repage -bordercolor white -border 24 \
-        -colors 32 -strip PNG8:images/worked-example.png
+    pdftoppm -r 220 -f 1 -l 1 -png cv.pdf e
+    magick e-1.png -trim +repage -bordercolor white -border 36 \
+        -colors 64 -strip PNG8:images/worked-example.png
 -->
 
 ### Reference Lists
@@ -157,7 +157,7 @@ Use `bibenum` for a numbered list (publications, for instance) and `bibsection` 
 
 - `\blankline` and `\halfblankline` add a full or half line of space where a page break is welcome. Put each on a line of its own between paragraphs, not inside one.
 - `\email{you@example.edu}` is a link that opens a mail message, and `\url{...}` and `\href{url}{text}` are the usual links. In the template, links are dark blue.
-- `\doi{10.1000/example}` links a DOI.
+- `\doi{10.1000/xyz}` links a DOI.
 
 ## Accessible (Tagged) PDF
 
