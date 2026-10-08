@@ -597,9 +597,11 @@
 % NOTE: The contact information is three boxes side by side on one line
 %       (not a table, so that assistive technology does not announce a
 %       data table). The left box has address info, the middle box
-%       holds the space between them (and can hold a vertical bar), and
-%       the right box has phone and electronic contact information.
-%       Mind the \\ line breaks inside each box.
+%       holds the space between them, and the right box has phone and
+%       electronic contact information.
+%       The boxes are top aligned: the first line of each sits on the
+%       same line as the section title. Mind the \\ line breaks inside
+%       each box.
 %
 % MACROS: \rcollength is the width of the right box
 %             (adjust it to your liking; default is 1.85in).
@@ -610,19 +612,18 @@
 %
 \noindent
 % Address box
-\parbox{\textwidth-\rcollength-\spacewidth}{%
+\parbox[t]{\textwidth-\rcollength-\spacewidth}{%
 %Assistant Professor\\
 \href{http://www.asu.edu/}{Arizona State University}\\
 \href{http://cidse.engineering.asu.edu/}{School of Computing and Augmented Intelligence}\\
 PO Box 878809, Room 553\\
 Tempe, AZ  85287-8809  USA}%
 %
-% Uncomment to add a vertical bar in middle of contact information
-%{\vrule width 0.5pt}
-\parbox[c][5\baselineskip]{\spacewidth}{\mbox{}}%
+% Space between the boxes
+\parbox[t]{\spacewidth}{\mbox{}}%
 %
 % Non-snail-mail contact information
-\parbox{\rcollength}{%
+\parbox[t]{\rcollength}{%
 \textit{Work:} +1-480-965-2899 \\
 \textit{Fax:} +1-480-965-2751 \\
 \textit{E-mail:} \email{tpavlic@asu.edu}\\
