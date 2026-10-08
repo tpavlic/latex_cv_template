@@ -4,6 +4,10 @@ This repository includes `cv.tex`, which is a simple, customizable LaTeX curricu
 
 The template can produce an accessible, tagged PDF (one that screen readers and other assistive technology can navigate by heading, list, and link) as well as an ordinary untagged one, from the same source file.
 
+![First page of the default CV: the name and a rule across the top, then Contact Information with an address on the left and phone, e-mail, and web address on the right, Research Interests as a paragraph, and Current and Previous Academic Appointments as entries with titles on the left, dates on the right, and bulleted details below. Each section title is set in small capitals in the left margin.](images/cv-page-1.png)
+
+The image above is page 1 of the default build. The CV is 21 pages long.
+
 - [Preliminaries](#preliminaries)
   - [Required LaTeX Packages](#required-latex-packages)
   - [Building the CV](#building-the-cv)
@@ -77,16 +81,15 @@ All of the entries in a CV are `cvlist` lists. A list is tight by default, which
 
 ### A Worked Example
 
-This is the pattern the template uses for each entry: a loose list whose items are headings with a right-aligned date, each followed by a tight list of details. The reference list at the end is explained in the next section.
+This is the pattern the template uses for each entry: a line naming the employer, then a loose list whose items are headings with a right-aligned date, each followed by a tight list of details. The reference list at the end is explained in the next section.
 
 ```latex
 \section{Experience}
 
+\href{https://www.example.edu/}{\textbf{Example University}}, Anytown
 \begin{cvlist}[loose]
 
-    \entry \textbf{Assistant Professor},
-        \href{https://www.example.edu/}{Example University}
-        \hfill \textbf{August 2020 to present}
+    \entry \textit{Assistant Professor} \hfill \textbf{August 2020 to present}
     \begin{cvlist}
         \item Teach graduate courses in simulation
         \item Advise four doctoral students
@@ -95,9 +98,7 @@ This is the pattern the template uses for each entry: a loose list whose items a
         \end{cvlist}
     \end{cvlist}
 
-    \entry \textbf{Postdoctoral Scholar},
-        \href{https://www.example.org/}{Example Institute}
-        \hfill \textbf{June 2017 to July 2020}
+    \entry \textit{Postdoctoral Scholar} \hfill \textbf{June 2017 to July 2020}
     \begin{cvlist}
         \item Developed models of collective behavior
     \end{cvlist}
@@ -112,6 +113,23 @@ This is the pattern the template uses for each entry: a loose list whose items a
         \doi{10.1000/example}
 \end{bibenum}
 ```
+
+It produces this (the footer is left out here):
+
+![Rendered worked example: the name with a rule beneath it, then an Experience section naming Example University, with two entries in italics, Assistant Professor and Postdoctoral Scholar, each with dates in bold at the right margin and bulleted details below, one of them with a dash sub-item, followed by a Publications section with one numbered reference.](images/worked-example.png)
+
+<!--
+To regenerate the two images in images/ (both made with lualatex):
+  cv-page-1.png: build cv.tex, then
+    pdftoppm -r 130 -f 1 -l 1 -png cv.pdf p
+    magick p-01.png -colors 48 -strip PNG8:images/cv-page-1.png
+  worked-example.png: copy cv.tex, put the example above (with
+    \makeheading{Your Name} before it) after \begin{document}, change
+    \pagestyle{fancy} to \pagestyle{empty}, build, then
+    pdftoppm -r 150 -f 1 -l 1 -png cv.pdf e
+    magick e-1.png -trim +repage -bordercolor white -border 24 \
+        -colors 32 -strip PNG8:images/worked-example.png
+-->
 
 ### Reference Lists
 
