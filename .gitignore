@@ -33,6 +33,9 @@
 *-blx.bib
 *.run.xml
 
+## MathML written by LuaLaTeX for tagged PDF:
+*-luamml-mathml.html
+
 ## Build tool auxiliary files:
 *.fdb_latexmk
 *.synctex

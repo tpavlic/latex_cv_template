@@ -1,3 +1,46 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% HOW TO USE THIS FILE %%%%%%%%%%%%%%%%%%%%%%
+%%
+%% WHERE TO EDIT
+%%   * DOCUMENT SETUP (below): fonts, paper size, page numbers, link
+%%     colors, and the PDF title and author.
+%%   * BEGIN CV DOCUMENT (after the helper commands): your name, contact
+%%     information, and every section of the CV itself.
+%%
+%% WHAT TO SKIP OVER
+%%   * The ``PDF METADATA AND TAGGING'' block just below.
+%%   * HELPER COMMANDS, unless you want to change how a section, list,
+%%     or the heading looks. The comments there say how to use each
+%%     command in the CV.
+%%
+%% BUILDING (the same file builds three ways)
+%%   pdflatex cv.tex    tagged PDF, as accessible as pdfTeX allows
+%%   lualatex cv.tex    tagged PDF/UA with math structure (the most
+%%                      accessible; recommended)
+%%   latex cv.tex       DVI output, for dvips and ps2pdf; the PDF is not
+%%                      tagged and so is not accessible
+%%   Run LaTeX more than once (or use ``latexmk'') so that the page count
+%%   in the footer settles. See README.md for the details.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% PDF METADATA AND TAGGING %%%%%%%%%%%%%%%%%%%%%%
+%% SKIP OVER THIS BLOCK. It switches on accessible (tagged) PDF output
+%% only where it is supported: a LaTeX format from TeX Live 2025 or
+%% later, building a PDF directly (pdflatex or lualatex). The DVI route
+%% (latex, dvips) and older formats ignore it and build the same
+%% document untagged. With LuaLaTeX, formulas are also written as MathML.
+\ifdefined\IfFormatAtLeastTF
+    \IfFormatAtLeastTF{2025-06-01}{%
+        \ifnum\ifdefined\pdfoutput\pdfoutput\else\ifdefined\outputmode\outputmode\else 0\fi\fi>0
+            \DocumentMetadata{lang=en-US,
+                              pdfversion=2.0,
+                              pdfstandard=ua-2,
+                              tagging=on,
+                              tagging-setup={math/setup={mathml-SE,mathml-AF,tex-AF},
+                                             math/alt/use}}
+        \fi}{}
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%% Simple LaTeX CV Template %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -174,7 +217,13 @@
 \setlength{\parindent}{0in}
 
 % Layout: Provides special list environments and macros to create new ones
-\usepackage[shortlabels]{enumitem}
+% (enumitem's ``shortlabels'' option is not used: LaTeX's tagged-PDF
+%  emulation of enumitem does not support it; use label=... keys)
+\usepackage{enumitem}
+% The tagged emulation of enumitem has no \restartlist; this stand-in
+% resets the counter that a ``resume'' list continues from. (Where
+% enumitem itself defines \restartlist, that definition is kept.)
+\providecommand*{\restartlist}[1]{\setcounter{#1i}{0}}
 
 %%%%%%%%%%
 %%%%%%% BIBLIOGRAPHY SECTIONS: bibsection AND bibenum
@@ -204,22 +253,22 @@
 \setlength{\bibhang}{1em}
 \newlength{\bibsep}
  {\@listi \global\bibsep\itemsep \global\advance\bibsep by\parsep}
+\newlength{\bibenumindent}
+\AtBeginDocument{{\normalfont\normalsize
+    \settowidth{\bibenumindent}{[999]}%
+    \global\bibenumindent=\dimexpr\bibenumindent+\bibhang\relax}}
 % bibsection setup (unnumbered bib list)
 \newlist{bibsection}{itemize}{3}
 \setlist[bibsection]{label=,leftmargin=\bibhang,%
         itemindent=-\bibhang,
-        itemsep=\bibsep,parsep=\z@,partopsep=0pt,
-        topsep=0pt}
-\let\oldendbibsection\endbibsection
-\def\endbibsection{\oldendbibsection\vspace{-.6\baselineskip}}
+        nosep,itemsep=\bibsep}
+\AddToHook{env/bibsection/after}{\vspace{-.6\baselineskip}}
 % bibenum setup (numbered bib list, with option to reset numbering)
 \newlist{bibenum}{enumerate}{3}
-\setlist[bibenum]{label=[\arabic*],resume,leftmargin={\bibhang+\widthof{[999]}},%
+\setlist[bibenum]{label=[\arabic*],resume,leftmargin=\bibenumindent,%
         itemindent=-\bibhang,
-        itemsep=\bibsep,parsep=\z@,partopsep=0pt,
-        topsep=0pt}
-\let\oldendbibenum\endbibenum
-\def\endbibenum{\oldendbibenum\vspace{-.6\baselineskip}}
+        nosep,itemsep=\bibsep}
+\AddToHook{env/bibenum/after}{\vspace{-.6\baselineskip}}
 \makeatother
 
 % Accessibility: Enable PDF bookmarks to sections and colored links
@@ -230,18 +279,71 @@
 %       ``darkblue'' for the link colors.
 \usepackage{color,hyperref}
 \definecolor{darkblue}{rgb}{0.0,0.0,0.3}
-\hypersetup{colorlinks,breaklinks,
+\hypersetup{colorlinks,
             linkcolor=darkblue,urlcolor=darkblue,
-            anchorcolor=darkblue,citecolor=darkblue,
+            citecolor=darkblue,
             %linkcolor=black,urlcolor=black,            % For print/OCR
-            %anchorcolor=black,citecolor=black,         % For print/OCR
+            %citecolor=black,                           % For print/OCR
             %draft                                      % For print/OCR
             }
+% (The tagged-PDF version of hyperref does not know these two options,
+%  which only matter for the DVI/dvips route and for link color.)
+\makeatletter
+\@ifundefined{tagpdfsetup}{\hypersetup{breaklinks,anchorcolor=darkblue}}{}
+\makeatother
+
+% Accessibility: PDF title and author
+%
+% EDIT THESE. A PDF should have a title for assistive technology and for
+% the window or tab it opens in, and the author appears in the file's
+% properties. (The document language is set by ``lang'' in the metadata
+% block at the very top of this file.)
+\hypersetup{pdftitle={Curriculum Vitae of Theodore P. Pavlic},
+            pdfauthor={Theodore P. Pavlic},
+            pdfsubject={Curriculum vitae}}
 
 %%%%%%%%%%%%%%%%%%%%%%%% END DOCUMENT SETUP %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% HELPER COMMANDS %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% IMAGES (ALTERNATIVE TEXT AND DECORATIVE IMAGES)
+
+% Every image in an accessible PDF needs one of two things:
+%
+%   * alternative text that says what the image conveys, for someone who
+%     cannot see it, or
+%   * a mark saying that the image is purely decorative, so that assistive
+%     technology skips it.
+%
+% \cvimage[options]{file}{alternative text}
+%     An image that carries information (a photograph of you, a logo
+%     that identifies an organization, a chart). The ``options'' are
+%     anything \includegraphics accepts, like height=1.5in. Describe
+%     what the image shows or means in one short phrase or sentence, as
+%     in
+%
+%       \cvimage[height=1.5in]{my_picture}{Photograph of Your Name}
+%
+% \decorativegraphics[options]{file}
+%     An image that adds nothing to the content (a flourish, a
+%     background, a picture that repeats text next to it).
+%
+% Prefer these two commands to a bare \includegraphics, which would
+% leave a figure without alternative text in a tagged PDF.
+%
+% Where either command is used in the template below, it is commented
+% out, since the template ships with no image files.
+\usepackage{graphicx}
+% Very old graphicx releases have no ``alt'' or ``artifact'' keys; accept
+% and ignore them there so that these commands never break a build. They
+% also do nothing on the DVI/dvips route and in a PDF that is not tagged.
+\makeatletter
+\@ifundefined{KV@Gin@alt}{\define@key{Gin}{alt}{}}{}
+\@ifundefined{KV@Gin@artifact}{\define@key{Gin}{artifact}[true]{}}{}
+\makeatother
+\newcommand{\cvimage}[3][]{\includegraphics[alt={#3},#1]{#2}}
+\newcommand{\decorativegraphics}[2][]{\includegraphics[artifact,#1]{#2}}
 
 %%% HEADING AT TOP OF CURRICULUM VITAE
 
@@ -263,11 +365,12 @@
 % will put an emphasized ``Curriculum vitae'' at the top of the document
 % as a title. Likewise, a picture could be included:
 %
-%   \makeheading[{\includegraphics[height=1.5in]{my_picture}}]{Your Name}
+%   \makeheading[{\cvimage[height=1.5in]{my_picture}{Photograph of Your Name}}]{Your Name}
 %
 % the picture will be flush right across from the name. For this example
-% to work, make sure the extra set of curly braces is included. Also
-% make sure that \usepackage{graphicx} is somewhere in the preamble.
+% to work, make sure the extra set of curly braces is included. Use
+% \cvimage (with alternative text) for a picture that matters, and
+% \decorativegraphics for one that does not (see ``IMAGES'' above).
 \newcommand{\makeheading}[2][]%
         {\hspace*{-\marginparsep minus \marginparwidth}%
          \begin{minipage}[t]{\textwidth+\marginparwidth+\marginparsep}%
@@ -280,79 +383,140 @@
 % The section headings. Flush left in small caps down pseudo-margin.
 %
 % Usage: \section{section name}
+%
+% The title is typeset in a zero-height box in the margin, and the text
+% that follows starts on the same line. In a tagged PDF, the same
+% commands that the kernel's own heading code uses (the ``sec'' tagging
+% sockets, which do nothing when tagging is off) mark the title as a
+% real heading, so that it appears in the document's structure and its
+% bookmarks rather than as loose text.
+\setcounter{secnumdepth}{0}% section titles are not numbered
+\makeatletter
 \renewcommand{\section}[1]{\pagebreak[3]%
     \vspace{1.3\baselineskip}%
+    \ifdefined\UseTaggingSocket
+        \UseTaggingSocket{sec/end}{1}%
+        \UseTaggingSocket{sec/begin}{{1}{tag=\UseStructureName{sec/1}}}%
+    \fi
     \phantomsection\addcontentsline{toc}{section}{#1}%
+    \begingroup
+    \ifdefined\UseTaggingSocket
+        \UseTaggingSocket{sec/title/init}{1}%
+    \fi
     \noindent\llap{\scshape\smash{\parbox[t]{\marginparwidth}{\hyphenpenalty=10000\raggedright #1}}}%
-    \vspace{-\baselineskip}\par}
+    \vspace{-\baselineskip}\par
+    \endgroup}
+\makeatother
 
 %%% LISTS
 
-% This macro alters a list by removing some of the space that follows the list
-% (is used by lists below)
-\newcommand*\fixendlist[1]{%
-    \expandafter\let\csname preFixEndListend#1\expandafter\endcsname\csname end#1\endcsname
-    \expandafter\def\csname end#1\endcsname{\csname preFixEndListend#1\endcsname\vspace{-0.6\baselineskip}}}
-
-% These macros help ensure that items in outer-type lists do not get
-% separated from the next line by a page break
-% (they are used by lists below)
-\let\originalItem\item
-\newcommand*\fixouterlist[1]{%
-    \expandafter\let\csname preFixOuterList#1\expandafter\endcsname\csname #1\endcsname
-    \expandafter\def\csname #1\endcsname{\let\oldItem\item\def\item{\pagebreak[2]\oldItem}\csname preFixOuterList#1\endcsname}
-    \expandafter\let\csname preFixOuterListend#1\expandafter\endcsname\csname end#1\endcsname
-    \expandafter\def\csname end#1\endcsname{\let\item\oldItem\csname preFixOuterListend#1\endcsname}}
-\newcommand*\fixinnerlist[1]{%
-    \expandafter\let\csname preFixInnerList#1\expandafter\endcsname\csname #1\endcsname
-    \expandafter\def\csname #1\endcsname{\let\oldItem\item\let\item\originalItem\csname preFixInnerList#1\endcsname}
-    \expandafter\let\csname preFixInnerListend#1\expandafter\endcsname\csname end#1\endcsname
-    \expandafter\def\csname end#1\endcsname{\csname preFixInnerListend#1\endcsname\let\item\oldItem}}
+% NOTE: write \item[{}] (not \item[]) for an item with no bullet; tagged
+% lists treat an empty \item[] as a request for the default label.
+%
+% Lists are built with enumitem's \newlist and configured with keys and
+% kernel hooks only (no patching of \item or \end...), which keeps them
+% valid when the PDF is tagged. Tagged lists accept plain lengths in
+% \setlist, but not enumitem's ``leftmargin=*'', calc expressions, or the
+% before/after keys, so those are replaced by a measured length
+% (\listindent) and by hooks that run after the list ends.
+%   * outer-type lists prefer a page break before the list begins (the
+%     \pagebreak[2] in a hook that runs before the list), so the first
+%     item is not separated from the line that precedes it
+%   * several lists remove some of the space that follows them
+% (The width is measured when the document starts, in the body font,
+% because the preamble's font is not the one the lists are typeset in.)
+% (\bibbulletindent is the left margin of a bibsection list that has a
+% bullet; the bullet hangs in the space that bibsection's negative item
+% indent opens up.)
+\newlength{\listindent}
+\newlength{\bibbulletindent}
+\AtBeginDocument{{\normalfont\normalsize
+    \settowidth{\listindent}{\enskip\textbullet}%
+    \global\listindent=\dimexpr\listindent+\labelsep\relax
+    \global\bibbulletindent=\dimexpr\listindent+\bibhang\relax}}
+\newcommand*{\listendspace}[1]{\AddToHook{env/#1/after}{\vspace{-0.6\baselineskip}}}
+\newcommand*{\listbreakbefore}[1]{\AddToHook{env/#1/before}{\pagebreak[2]}}
 
 % An itemize-style list with lots of space between items
 %
 % Usage:
 %   \begin{outerlist}
-%       \item ...    % (or \item[] for no bullet)
+%       \item ...    % (or \item[{}] for no bullet)
 %   \end{outerlist}
 \newlist{outerlist}{itemize}{3}
-    \setlist[outerlist]{label=\enskip\textbullet,leftmargin=*}
-    \fixendlist{outerlist}
-    \fixouterlist{outerlist}
+    \setlist[outerlist]{label=\enskip\textbullet,leftmargin=\listindent}
+    \listendspace{outerlist}
+    \listbreakbefore{outerlist}
 
 % An environment IDENTICAL to outerlist that has better pre-list spacing
 % when used as the first thing in a \section
 %
 % Usage:
 %   \begin{lonelist}
-%       \item ...    % (or \item[] for no bullet)
+%       \item ...    % (or \item[{}] for no bullet)
 %   \end{lonelist}
 \newlist{lonelist}{itemize}{3}
-    \setlist[lonelist]{label=\enskip\textbullet,leftmargin=*,partopsep=0pt,topsep=0pt}
-    \fixendlist{lonelist}
-    \fixouterlist{lonelist}
+    \setlist[lonelist]{label=\enskip\textbullet,leftmargin=\listindent,
+        nosep,itemsep=4pt plus 2pt minus 1pt,parsep=4pt plus 2pt minus 1pt}
+    \listendspace{lonelist}
+    \listbreakbefore{lonelist}
 
 % An itemize-style list with little space between items
 %
 % Usage:
 %   \begin{innerlist}
-%       \item ...    % (or \item[] for no bullet)
+%       \item ...    % (or \item[{}] for no bullet)
 %   \end{innerlist}
 \newlist{innerlist}{itemize}{3}
-    \setlist[innerlist]{label=\enskip\textbullet,leftmargin=*,parsep=0pt,itemsep=0pt,topsep=0pt,partopsep=0pt}
-    \fixinnerlist{innerlist}
+    \setlist[innerlist]{label=\enskip\textbullet,leftmargin=\listindent,nosep}
 
 % An environment IDENTICAL to innerlist that has better pre-list spacing
 % when used as the first thing in a \section
 %
 % Usage:
 %   \begin{loneinnerlist}
-%       \item ...    % (or \item[] for no bullet)
+%       \item ...    % (or \item[{}] for no bullet)
 %   \end{loneinnerlist}
 \newlist{loneinnerlist}{itemize}{3}
-    \setlist[loneinnerlist]{label=\enskip\textbullet,leftmargin=*,parsep=0pt,itemsep=0pt,topsep=0pt,partopsep=0pt}
-    \fixendlist{loneinnerlist}
-    \fixinnerlist{loneinnerlist}
+    \setlist[loneinnerlist]{label=\enskip\textbullet,leftmargin=\listindent,nosep}
+    \listendspace{loneinnerlist}
+
+%%% ALTERNATIVE TEXT FOR FORMULAS
+
+% \mathalt{alt text}{math} typesets ``math'' as usual and, in a tagged
+% PDF, gives that formula the alternative text ``alt text'' (what a screen
+% reader speaks) in place of the default description built from its TeX
+% source. Use it for symbols used as markers or bullets, as in
+%
+%   \item[\mathalt{dagger}{$\dagger$}] ...
+%
+% Without PDF tagging, it just typesets the math. (The tagged version
+% uses a tagging socket of LaTeX's math code, so it is skipped where the
+% socket does not exist.)
+\newcommand{\mathalt}[2]{#2}
+\ifdefined\NewTaggingSocketPlug
+\ExplSyntaxOn
+\cs_if_exist:NT \l__math_content_alt_tl
+  {
+    \tl_new:N \l_cv_mathalt_tl
+    \NewTaggingSocketPlug { math/content } { cv-alt }
+      {
+        \tl_set:Ne \l__math_content_alt_tl
+          {
+            \tl_if_empty:NTF \l_cv_mathalt_tl
+              { \l__math_content_template_tl }
+              { \l_cv_mathalt_tl }
+          }
+        \tl_set:Ne \l__math_content_AF_source_tl { \l__math_texsource_template_tl }
+        \tl_set:Nn \l__math_content_AF_mathml_tl { }
+        \tl_set:Nn \l__math_content_actual_tl { }
+      }
+    \AssignTaggingSocketPlug { math/content } { cv-alt }
+    \RenewDocumentCommand \mathalt { m m }
+      { \group_begin: \tl_set:Nn \l_cv_mathalt_tl {#1} #2 \group_end: }
+  }
+\ExplSyntaxOff
+\fi
 
 %%% EXTRA SPACE
 
@@ -427,42 +591,39 @@
 
 \section{Contact Information}
 
-% NOTE: Mind where the & separators and \\ breaks are in the following
-%       table. Table is one row made up of three parboxes. The left
-%       parbox has address info, the middle parbox has a vertical bar,
-%       and the right parbox has phone and electronic contact
-%       information.
+% NOTE: The contact information is three boxes side by side on one line
+%       (not a table, so that assistive technology does not announce a
+%       data table). The left box has address info, the middle box
+%       holds the space between them (and can hold a vertical bar), and
+%       the right box has phone and electronic contact information.
+%       Mind the \\ line breaks inside each box.
 %
-% MACROS: \rcollength is the width of the right column of the table
+% MACROS: \rcollength is the width of the right box
 %             (adjust it to your liking; default is 1.85in).
 %         \spacewidth is width of area between left and right boxes.
 %
 \newlength{\rcollength}\setlength{\rcollength}{1.85in}%
 \newlength{\spacewidth}\setlength{\spacewidth}{20pt}
 %
-\begin{tabular}[t]{@{}p{\textwidth-\rcollength-\spacewidth}@{}p{\spacewidth}@{}p{\rcollength}}%
-
+\noindent
 % Address box
 \parbox{\textwidth-\rcollength-\spacewidth}{%
 %Assistant Professor\\
 \href{http://www.asu.edu/}{Arizona State University}\\
 \href{http://cidse.engineering.asu.edu/}{School of Computing and Augmented Intelligence}\\
 PO Box 878809, Room 553\\
-Tempe, AZ  85287-8809  USA}
-
-&
+Tempe, AZ  85287-8809  USA}%
+%
 % Uncomment to add a vertical bar in middle of contact information
 %{\vrule width 0.5pt}
-\parbox[m][5\baselineskip]{\spacewidth}{} &
-
+\parbox[c][5\baselineskip]{\spacewidth}{\mbox{}}%
+%
 % Non-snail-mail contact information
 \parbox{\rcollength}{%
 \textit{Work:} +1-480-965-2899 \\
 \textit{Fax:} +1-480-965-2751 \\
 \textit{E-mail:} \email{tpavlic@asu.edu}\\
-\textit{WWW:} \href{http://www.tedpavlic.com/}{www.tedpavlic.com}}
-
-\end{tabular}
+\textit{WWW:} \href{http://www.tedpavlic.com/}{www.tedpavlic.com}}\par
 
 %%
 %% In modern CV's, it seems like ``Objective'' is frowned upon. Instead,
@@ -525,11 +686,11 @@ bio-inspiration
             \hfill {August 2015 to present}
 \begin{innerlist}
 
-    \item[] \href{http://cidse.engineering.asu.edu/}{School of
+    \item[{}] \href{http://cidse.engineering.asu.edu/}{School of
         Computing and Augmented Intelligence}~(50\%)
-    \item[] \href{http://sustainability.asu.edu/}{School of
+    \item[{}] \href{http://sustainability.asu.edu/}{School of
         Sustainability}~(25\%)
-    \item[] \href{http://sustainability.asu.edu/}{School of Complex
+    \item[{}] \href{http://sustainability.asu.edu/}{School of Complex
         Adaptive Systems}~(25\%)
     \begin{innerlist}
         \item Affiliations:
@@ -561,7 +722,7 @@ bio-inspiration
             \hfill {August 2014 to July 2015}
 \begin{innerlist}
 
-    \item[] \href{http://sols.asu.edu/}{School of Life Sciences}
+    \item[{}] \href{http://sols.asu.edu/}{School of Life Sciences}
     \begin{innerlist}
         \item Affiliations:
             \begin{innerlist}
@@ -586,7 +747,7 @@ bio-inspiration
             \hfill {July 2012 to August 2014}
 \begin{innerlist}
 
-    \item[] \href{http://sols.asu.edu/}{School of Life Sciences}
+    \item[{}] \href{http://sols.asu.edu/}{School of Life Sciences}
     \begin{innerlist}
         \item Supervisor: \href{http://www.public.asu.edu/~spratt1}{Professor Stephen C.~Pratt}
         \item Decentralized decision making and behavioral bio-mimicry
@@ -602,15 +763,15 @@ bio-inspiration
             \hfill {September 2010 to June 2012}
 \begin{innerlist}
 
-    \item[] \href{http://www.cse.ohio-state.edu/}{Department of Computer Science and Engineering}
+    \item[{}] \href{http://www.cse.ohio-state.edu/}{Department of Computer Science and Engineering}
     \begin{innerlist}
         \item \href{http://www.nfs.gov/}{NSF} ECCS-\href{http://www.nsf.gov/awardsearch/showAward?AWD_ID=0931669}{0931669}:
                 ``Autonomous Driving in Mixed-Traffic Urban Environments''
         \begin{innerlist}
-            \item[$-$] Supervisor (co-PI):
+            \item[\mathalt{dash}{$-$}] Supervisor (co-PI):
                 \href{http://www.cse.ohio-state.edu/~paolo/}%
                      {Professor Paolo A.~G.~Sivilotti}
-            \item[$-$] PI:
+            \item[\mathalt{dash}{$-$}] PI:
                 \href{http://www.ece.ohio-state.edu/~umit/}%
                      {Professor \"{U}mit \"{O}zg\"{u}ner}
         \end{innerlist}
@@ -624,7 +785,7 @@ bio-inspiration
 Columbus, OH
 \begin{outerlist}
 
-\item[] Ph.D.,
+\item[{}] Ph.D.,
         \href{http://www.ece.osu.edu/}
              {Electrical and Computer Engineering},
              August 2010
@@ -640,7 +801,7 @@ Columbus, OH
         \item Area of Study: Control Engineering
         \end{innerlist}
 
-\item[] M.S.,
+\item[{}] M.S.,
         \href{http://www.ece.osu.edu/}
              {Electrical and Computer Engineering}, August 2007
         \begin{innerlist}
@@ -651,7 +812,7 @@ Columbus, OH
         \item Area of Study: Control Engineering
         \end{innerlist}
 
-\item[] B.S.,
+\item[{}] B.S.,
         \href{http://www.ece.osu.edu/}
              {Electrical and Computer Engineering}, June 2004
         \begin{innerlist}
@@ -885,7 +1046,7 @@ Columbus, OH
 
     \item Campbell, J., C.E.~Tuncali, P.~Liu, T.P.~Pavlic, U.~Ozguner,
         and G.~Fainekos. Modeling concurrency and reconfiguration in
-        vehicular systems: A $\pi$-calculus approach. In:
+        vehicular systems: A \mathalt{pi}{$\pi$}-calculus approach. In:
         \emph{Proceedings of the 2016 IEEE International Conference on
         Automation Science and Engineering (CASE 2016)}, August 21--24,
         2016.\\
@@ -1659,7 +1820,7 @@ included here.}
 Tempe, AZ
 \begin{outerlist}
 
-\item[] \textit{Instructor} \hfill \textbf{Fall 2015 to present}
+\item[{}] \textit{Instructor} \hfill \textbf{Fall 2015 to present}
     \begin{innerlist}
         \item SOS 212 (Systems, Dynamics, and Sustainability)
         \item SOS 325 (Economics of Sustainability)
@@ -1673,7 +1834,7 @@ Tempe, AZ
             (Bio-Inspired AI and Optimization)
     \end{innerlist}
 
-\item[] \textit{Guest Lecturer} \hfill \textbf{April 2015}
+\item[{}] \textit{Guest Lecturer} \hfill \textbf{April 2015}
     \begin{innerlist}
         \item ASM~394: Great Adaptations: Origins of Complexity in Nature
         \begin{innerlist}
@@ -1683,7 +1844,7 @@ Tempe, AZ
         \end{innerlist}
     \end{innerlist}
 
-\item[] \textit{Guest Lecturer} \hfill \textbf{October 2013}
+\item[{}] \textit{Guest Lecturer} \hfill \textbf{October 2013}
     \begin{innerlist}
         \item ANB~601: Research Strategies in Animal Behavior
         \begin{innerlist}
@@ -1701,7 +1862,7 @@ Tempe, AZ
 Columbus, OH
 \begin{outerlist}
 
-\item[] \textit{Instructor}%
+\item[{}] \textit{Instructor}%
     \hfill \textbf{March~2012 to August~2012}
     \begin{innerlist}
         \item Instructor for ECE~683: Undergraduate Design Project
@@ -1716,7 +1877,7 @@ Columbus, OH
             \end{innerlist}
     \end{innerlist}
 
-\item[] \textit{Teaching Assistant}%
+\item[{}] \textit{Teaching Assistant}%
     \hfill \textbf{September 2007 to August 2009}\\
     (sample graded material and student evaluations available upon
     request)
@@ -1800,16 +1961,16 @@ Columbus, OH
         \end{innerlist}
     \end{innerlist}
 
-\item[] \href{http://www.nsfgk12.org/}
+\item[{}] \href{http://www.nsfgk12.org/}
         {\emph{National Science Foundation GK\-/12 Graduate Fellow}}
         \hfill \textbf{September 2006 to October 2007}
 \begin{innerlist}
-    \item[] Developed, implemented, and evaluated daily inquiry\-/based
+    \item[{}] Developed, implemented, and evaluated daily inquiry\-/based
         fourth\-/grade science lessons for a local inner\-/city public
         school class.
 \end{innerlist}
 
-\item[] \textit{Instructor}%
+\item[{}] \textit{Instructor}%
         \hfill \textbf{March 2002 to June 2004}
 \begin{innerlist}
 \item Member of \href{http://feh.eng.ohio-state.edu/}
@@ -1823,7 +1984,7 @@ Columbus, OH
 \item Graded weekly lab reports and provided laboratory exams.
 \end{innerlist}
 
-\item[] \textit{Teaching Assistant}%
+\item[{}] \textit{Teaching Assistant}%
         \hfill \textbf{September 2000 to March 2002}
 \begin{innerlist}
 \item Assisted \href{http://feh.eng.ohio-state.edu/}
@@ -1836,7 +1997,7 @@ Columbus, OH
       Group~(PERG).
 \end{innerlist}
 
-\item[] \textit{Undergraduate Researcher}%
+\item[{}] \textit{Undergraduate Researcher}%
         \hfill \textbf{September 2000 to March 2002}
 \begin{innerlist}
 \item Participated in the
@@ -1850,7 +2011,7 @@ Columbus, OH
         compliance.
 \end{innerlist}
 
-\item[] \textit{Grader}%
+\item[{}] \textit{Grader}%
         \hfill \textbf{September 2001 to December 2001}
 \begin{innerlist}
 \item Graded daily electromagnetics assignments (ECE~311).
@@ -1913,7 +2074,7 @@ Columbus, OH
 \halfblankline
 
 \textbf{Conference Service}
-\begin{bibsection}[\enskip\textbullet,leftmargin=*]
+\begin{bibsection}[label=\enskip\textbullet,leftmargin=\bibbulletindent]
     \item Organizer for special session: ``Quantitative Approaches for
         Conservation, Natural Resource Management, and Energy'', 2021
         INFORMS Annual Meeting, Anaheim, CA, October 24--27, 2021.
@@ -1973,7 +2134,7 @@ Columbus, OH
 Tempe, AZ
 \begin{outerlist}
 
-    \item[] \textit{Assistant Professor}%
+    \item[{}] \textit{Assistant Professor}%
             \hfill \textbf{August 2015}
             \begin{innerlist}
                 \item Joint Appointment:
@@ -1990,7 +2151,7 @@ Tempe, AZ
                     making and organization.
             \end{innerlist}
 
-    \item[] \textit{Associate Research Scientist}%
+    \item[{}] \textit{Associate Research Scientist}%
             \hfill \textbf{August 2014 to July 2015}\\
         \textit{Postdoctoral Scholar}%
             \hfill \textbf{July 2012 to August 2014}
@@ -2021,17 +2182,17 @@ Tempe, AZ
 Columbus, OH
 \begin{outerlist}
 
-    \item[] \textit{Postdoctoral Researcher}%
+    \item[{}] \textit{Postdoctoral Researcher}%
             \hfill \textbf{September 2010 to June 2012}
             \begin{innerlist}
                 \item Funding:~\href{http://www.nfs.gov/}{National Science Foundation} Cyber\-/Physical Systems (ENG, \href{http://www.nsf.gov/div/index.jsp?div=eccs}{ECCS})
                 \begin{innerlist}
-                    \item[$-$] ``Autonomous Driving in Mixed\-/Traffic Urban Environments''
+                    \item[\mathalt{dash}{$-$}] ``Autonomous Driving in Mixed\-/Traffic Urban Environments''
                         (grant~\href{http://www.nsf.gov/awardsearch/showAward.do?AwardNumber=0931669}{\#0931669})
-                    \item[$-$] Supervisor (co\-/PI):
+                    \item[\mathalt{dash}{$-$}] Supervisor (co\-/PI):
                         \href{http://www.cse.ohio-state.edu/~paolo/}%
                              {Professor Paolo A.~G.~Sivilotti}
-                    \item[$-$] PI:
+                    \item[\mathalt{dash}{$-$}] PI:
                         \href{http://www.ece.ohio-state.edu/~umit/}%
                              {Professor \"{U}mit \"{O}zg\"{u}ner}
                 \end{innerlist}
@@ -2053,7 +2214,7 @@ Columbus, OH
 Austin, TX
 \begin{outerlist}
 
-\item[] \textit{Hardware R\&D Intern for Multifunction DAQ}%
+\item[{}] \textit{Hardware R\&D Intern for Multifunction DAQ}%
         \hfill \textbf{June 2003 to September 2003}
 \begin{innerlist}
 \item Designed final verification test fixture for use with STC2 MIO
@@ -2062,7 +2223,7 @@ Austin, TX
         on long\-/term drift of common industry voltage references.
 \end{innerlist}
 
-\item[] \textit{Hardware R\&D Intern for Multifunction DAQ}%
+\item[{}] \textit{Hardware R\&D Intern for Multifunction DAQ}%
         \hfill \textbf{June 2002 to September 2002}
 \begin{innerlist}
 \item Designed and performed validation tests for 16-bit 800 kHz
@@ -2080,7 +2241,7 @@ Austin, TX
 Research Triangle Park, NC
 \begin{outerlist}
 
-\item[] \textit{Core Systems Software Developer for FlexNAS}%
+\item[{}] \textit{Core Systems Software Developer for FlexNAS}%
         \hfill \textbf{June 2001 to September 2001}
 \begin{innerlist}
 \item Designed and implemented highly available multihop communications
@@ -2097,7 +2258,7 @@ Research Triangle Park, NC
 Columbus, OH
 \begin{outerlist}
 
-\item[] \textit{Information Technology Systems Engineer}%
+\item[{}] \textit{Information Technology Systems Engineer}%
         \hfill \textbf{June 1997 to May 2001}
 \begin{innerlist}
 \item Responsible for the acquisition, setup, and administration of all
@@ -2118,7 +2279,7 @@ Columbus, OH
 \textbf{MegaLinx Communications}, Dublin, OH
 \begin{outerlist}
 
-\item[] \textit{Web Developer and Support Representative}%
+\item[{}] \textit{Web Developer and Support Representative}%
         \hfill \textbf{June 1995 to May 1997}
 \begin{innerlist}
 \item Produced web content for commercial clients.
@@ -2391,7 +2552,7 @@ Instrumentation, Control, Data Acquisition, Test, and Measurement:
 Computer Programming:
 %
 \begin{innerlist}
-    \item C, C$+$$+$, Java, JavaScript, NetLogo, Pascal, Perl, PHP,
+    \item C, C\mathalt{plus}{$+$}\mathalt{plus}{$+$}, Java, JavaScript, NetLogo, Pascal, Perl, PHP,
         Lisp, UNIX shell scripting (including POSIX.2), GNU make,
         AppleScript, SQL, MySQL, and others
 \end{innerlist}
@@ -2420,7 +2581,7 @@ Version Control and Software Configuration Management:
 \begin{innerlist}
     \item Linear algebra, Fourier transforms, Monte Carlo analysis,
         nonlinear numerical methods, polynomials, statistics,
-        $N$-dimensional filters, visualization
+        \mathalt{N}{$N$}-dimensional filters, visualization
 
     \item Toolboxes: communications, control system, filter design,
         genetic algorithm and direct search, signal processing, system
@@ -2581,10 +2742,10 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://sols.asu.edu/}{School of Life Sciences},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[$\diamond$] School of Life Sciences, PO Box 874501, Tempe, AZ
+    \item[\mathalt{diamond}{$\diamond$}] School of Life Sciences, PO Box 874501, Tempe, AZ
         85287-4501
 
-    \item[$\star$] \emph{Dr.~Pratt is my current postdoctoral supervisor.}
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Pratt is my current postdoctoral supervisor.}
 \end{innerlist}
 
 \halfblankline
@@ -2597,11 +2758,11 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://sols.asu.edu/}{Mechanical and Aerospace Engineering},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[$\diamond$] School for Engineering of Matter, Transport, and
+    \item[\mathalt{diamond}{$\diamond$}] School for Engineering of Matter, Transport, and
         Energy, PO Box 876106, Tempe, AZ
         85287-6106
 
-    \item[$\star$] \emph{Dr.~Berman is collaborator on my bio\-/mimicry work.}
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Berman is collaborator on my bio\-/mimicry work.}
 \end{innerlist}
 
 \halfblankline
@@ -2616,11 +2777,11 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://beyond.asu.edu/}{Beyond Center for Fundamental Concepts in Science},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[$\diamond$] Beyond Center for Fundamental Concepts in Science,
+    \item[\mathalt{diamond}{$\diamond$}] Beyond Center for Fundamental Concepts in Science,
         P.O. Box 871504, Tempe, AZ
         85287-1504
 
-    \item[$\star$] \emph{Dr.~Davies is collaborator on my
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Davies is collaborator on my
         origins\-/of\-/life work.}
 \end{innerlist}
 
@@ -2636,11 +2797,11 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://sese.asu.edu/}{School of Earth and Space Exploration},
         \href{http://www.asu.edu/}{Arizona State University}
 
-    \item[$\diamond$] ASU School of Earth and Space Exploration,
+    \item[\mathalt{diamond}{$\diamond$}] ASU School of Earth and Space Exploration,
         PO Box 871404, Tempe, AZ
         85287-1404
 
-    \item[$\star$] \emph{Dr.~Walker is collaborator on my
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Walker is collaborator on my
         origins\-/of\-/life work.}
 \end{innerlist}
 
@@ -2652,7 +2813,7 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
     \item Principal,
         ThinkSplash LLC, Washington, DC
 
-    \item[$\star$] \emph{I co\-/authored a chapter in the \emph{Handbook
+    \item[\mathalt{star}{$\star$}] \emph{I co\-/authored a chapter in the \emph{Handbook
         of Human Computation}, for which Dr.~Michelucci was the
         editor\-/in\-/chief.}
 \end{innerlist}
@@ -2668,10 +2829,10 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://www.cse.ohio-state.edu/}{Computer Science and Engineering},
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \item[\mathalt{diamond}{$\diamond$}] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[$\star$] \emph{Dr.~Sivilotti is my past postdoctoral
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Sivilotti is my past postdoctoral
         supervisor.}
 \end{innerlist}
 
@@ -2687,10 +2848,10 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \item[\mathalt{diamond}{$\diamond$}] 395 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[$\star$] \emph{Dr.~Weide is a co\-/PI on the NSF grant that
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Weide is a co\-/PI on the NSF grant that
         funded my previous postdoctoral position.}
 \end{innerlist}
 
@@ -2708,10 +2869,10 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://www.math.ohio-state.edu/}{Mathematics}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] 300 Aronoff Laboratory, 318 W.~12th Avenue,
+    \item[\mathalt{diamond}{$\diamond$}] 300 Aronoff Laboratory, 318 W.~12th Avenue,
         Columbus, OH  43210
 
-    \item[$\star$] \emph{Dr.~Hamilton has been a valuable
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Hamilton has been a valuable
         interdisciplinary resource to me.}
 \end{innerlist}
 
@@ -2728,10 +2889,10 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         Engineering},
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \item[\mathalt{diamond}{$\diamond$}] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[$\star$] \emph{Dr.~Passino was my graduate adviser.}
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Passino was my graduate adviser.}
 \end{innerlist}
 
 \halfblankline
@@ -2746,10 +2907,10 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://www.ece.osu.edu/}{Electrical and Computer Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
+    \item[\mathalt{diamond}{$\diamond$}] 205 Dreese Laboratories, 2015 Neil Ave., Columbus,
         OH  43210
 
-    \item[$\star$] \emph{Dr.~Serrani was a member of my doctoral
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Serrani was a member of my doctoral
         committee.}
 \end{innerlist}
 
@@ -2764,9 +2925,9 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://mae.osu.edu/}{Mechanical and Aerospace Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] 244 Hitchcock Hall, 2070 Neil Ave., Columbus, OH  43210
+    \item[\mathalt{diamond}{$\diamond$}] 244 Hitchcock Hall, 2070 Neil Ave., Columbus, OH  43210
 
-    \item[$\star$] \emph{Dr.~Freuler coordinates the Fundamentals of
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Freuler coordinates the Fundamentals of
         Engineering for Honors program in which I served as an
         instructor early in my academic career.}
 \end{innerlist}
@@ -2782,9 +2943,9 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
         \href{http://mae.osu.edu/}{Mechanical and Aerospace Engineering}\\
         \href{http://www.osu.edu/}{The Ohio State University}
 
-    \item[$\diamond$] W192 Scott Laboratory, 201 W.~19th Ave., Columbus, OH  43210
+    \item[\mathalt{diamond}{$\diamond$}] W192 Scott Laboratory, 201 W.~19th Ave., Columbus, OH  43210
 
-    \item[$\star$] \emph{Dr.~Staab is the faculty adviser for the OSU
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Staab is the faculty adviser for the OSU
         FIRST robotics and engineering outreach group of which I was a
         four\-/year member and team leader.}
 \end{innerlist}
@@ -2797,7 +2958,7 @@ Department of Defense Top Secret SCI with polygraph (expired: 2002)
     \item Mixed-Signal Engineer,
         \href{http://www.silabs.com/}{Silicon Laboratories}, Austin, TX
 
-    \item[$\star$] \emph{Dr.~Daigle was my direct supervisor when I
+    \item[\mathalt{star}{$\star$}] \emph{Dr.~Daigle was my direct supervisor when I
         worked for National Instruments as an analog hardware R\&D
         engineer.}
 \end{innerlist}
